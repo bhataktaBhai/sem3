@@ -1,0 +1,50 @@
+\lecture{01}{Tue 01 Aug '23}{Introduction}
+
+\section{The Course} \label{sec:intro}
+Half or a little more of the course will cover probability.
+We will have a quiz every alternate week, and a homework every alternate week.
+Tentatively, one quiz and one homework will be dropped.
+
+\subsection{Professor} \label{sec:professor}
+\textbf{Name:} Manjunath Krishnapur \\
+\textbf{Email:} \href{mailto:manju@math.iisc.ac.in}{manju@math.iisc.ac.in}
+
+\subsection{References} \label{sec:references}
+\begin{itemize}
+    \item \href{https://minerva.it.manchester.ac.uk/~saralees/statbook3.pdf}
+        {Probability and Statistics for Engineers and Scientists} by
+        Sheldon~M.~Ross.
+    \item \href{http://staff.ustc.edu.cn/~ynyang/2022/books/2.5.pdf}{Statistics}
+        by Freedman, Pisani and Purves.
+        This is very light on mathematics.
+\end{itemize}
+\subsection{Grading} \label{sec:grading}
+\begin{enumerate}
+    \item \textbf{Final:} 50\%
+    \item \textbf{Midterm:} 20\%
+    \item \textbf{Quizzes/Assignments:} 30\%
+\end{enumerate}
+
+Statistics is about making the best use of data to make reasonable decisions.
+Statistics makes racism mathematical.
+
+
+\section{Probability} \label{sec:prob}
+\begin{definition}[Discrete Probability Space] \label{def:prob:discrete_space}
+    A \emph{discrete probability space} is an ordered pair $(\Omega, p)$ where:
+    \begin{enumerate}
+        \item $\Omega$ is a finite or countable set.
+        \item $p : \Omega \to [0, 1]$ such that $\sum_{\omega \in \Omega} p(\omega) = 1.$
+    \end{enumerate}
+    We define three more notions:
+    \begin{enumerate}
+        \item \textbf{Event:} any subset of $\Omega$.
+        \item \textbf{Probability of an event:} for an event
+            $A \subseteq \Omega$, $P(A) = \sum_{\omega \in A} p(\omega)$
+            is the probability of $A$.
+        \item \textbf{Random variable:} a function $X : \Omega \to \R$.
+    \end{enumerate}
+\end{definition}
+\begin{notation}
+    $p(\omega)$ is often denoted as $p_{\omega}$.
+\end{notation}

@@ -1,0 +1,83 @@
+\lecture{02}{Thu 03 Aug '23}{}
+\begin{examplelist}
+    \item $\Omega = \set{1, 2, \dots, 6}$ with $p(\omega) = \frac{1}{6}$ for all
+        $\omega \in \Omega$.
+
+        $A = \set{1, 6}$ is an event, and
+        $P(A) = \frac{1}{6} + \frac{1}{6} = \frac{1}{3}$.
+
+        This is a potential ``model'' for a fair d6.
+    \item ``Toss $n$ coins.''
+        We propose a probability space to describe this situation.
+        Suppose $n = 2$.
+        We label the coins and represent the set of all possible outcomes as \[
+            \Omega = \set{HH, HT, TH, TT} \text{ or as }
+            \Omega = \set{2H, 1H1T, 2T}.
+        \]
+        We choose the first representation since it carries the most
+        information.
+
+        $\Omega = \set{0, 1}^{n}$.
+        We propose $p(\omega)$ to be $\frac{1}{2^{n}}$ for all $\omega$.
+        Indeed, $\sum_{\omega \in \Omega} p_{\omega} = 1$.
+
+        Let $A$ be the event that we get $k \in \set{0, 1, \dots, n}$ or more
+        heads.
+        That is, \[
+            A = \set{x = (x_{1}, \dots, x_{n}) \in \Omega \mid \sum x \geq k}
+        \] and $P(A) = \sum_{a \in A} p_{a} = \frac{1}{2^{n}} \abs{A}$.
+        
+        To compute $\abs{A}$, we note that $A = B_{k} \cup B_{k+1} \cup \dots
+        \cup B_{n}$ where $B_{j} =
+        \set{\omega \in \Omega \mid \sum \omega = k}$ are pairwise disjoint.
+        Thus, $\abs{A} = \sum_{j = k}^{n} \abs{B_{j}}$ and so
+        \begin{align*}
+            P(A) &= \frac{\abs{B_{k}} + \dots + \abs{B_{n}}}{2^{n}} \\
+                &= \frac{1}{2^{n}} \brk{
+                    \binom{n}{k} + \binom{n}{k+1} + \dots + \binom{n}{n}
+                }
+        \end{align*}
+    \item ``Toss a coin $n$ times.''
+        $\Omega = \set{0, 1}^{n}$ again.
+        The index $i$ in an element of $\Omega$ is whether the $i$th toss landed
+        heads or tails.
+        In the previous example, the index $i$ was whether the $i$th coin
+        landed heads or tails.
+
+        Is $p$ the same as before?
+        If the coin has no ``memory'', then yes.
+        But suppose the coin is made of clay.
+        The shape of the coin changes as we toss it.
+        Then, the probability of getting heads on the $i$th toss depends on
+        the previous tosses.
+        The coin has ``memory''.
+        
+        Of course, we don't usually bother with such details.
+        It is still important to note that we are assuming that the coin has no
+        memory.
+    \item ``Throw $r$ balls into $m$ bins at random.''
+        This situation describes several others.
+        \begin{enumerate}
+            \item Toss $r$ coins ($m = 2$).
+            \item Roll an $m$-sided dice $r$ times.
+            \item Record the birthdays of $r$ people ($m = 365$ or $366$).
+            \item Study the occurence of letters in an English text.
+                Here $m = 26$ and $r$ is the number of letters in the text.
+        \end{enumerate}
+        We propose $\Omega = \set{1, \dots, m}^{r}$.
+        ``Random'' is not descriptive enough.
+
+        We have $\abs{\Omega} = m^{r}$ and so a reasonable $p$ is
+        $\omega \mapsto \frac{1}{m^{r}}$.
+
+        An alternative is $\tilde{\Omega} =
+        \set{\omega \in \set{0, \dots, r}^{m} \mid \sum \omega = r}$.
+        Note that $\abs{\tilde{\Omega}} = \binom{m + r - 1}{m - 1}$
+        A $\tilde{p}$ corresponding to the above $p$ is complicated.
+        In choosing $\Omega$, we made an implicit assumption that the $r$ balls
+        are distinguishable, as are the $m$ bins.
+
+        Suppose we have $r$ indistinguishable balls and $m$ distinguishable
+        bins.
+        Is $p = \omega \mapsto \frac{1}{\abs{\tilde{\Omega}}}$ reasonable?
+\end{examplelist}

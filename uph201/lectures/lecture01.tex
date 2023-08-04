@@ -1,0 +1,64 @@
+\lecture{01}{Fri 04 Aug '23}{Introduction}
+
+\section{The Course} \label{sec:course}
+\subsection{Schedule} \label{sec:schedule}
+\begin{itemize}
+    \item MWF 12:00-13:00 lecture hours (no tutorial on Monday)
+    \item Tutorials will still be held occasionally with homework discussions
+        and quizzes.
+\end{itemize}
+\subsection{Syllabus} \label{sec:syllabus}
+\begin{center}
+    \begin{tikzpicture}
+        \node (classical) [process] {Classical Physics};
+        \node (thermo) [process, below=of classical] {Thermo and stat physics};
+        \node (quantum) [process, below=of thermo] {Quantum physics};
+        \node (special) [process, right=of quantum] {Special};
+        \node (general) [process, right=of special] {General};
+        \path (general) -- (special) node[midway] (A) {};
+        \node [process] (relativity) at (A |- thermo) {Relativity};
+        \path (quantum) -- (special) node[midway] (B) {};
+        \node (standard) [process, below=of B] {Standard model};
+
+        \path [arrow] (classical) -- (thermo);
+        \path [arrow] (thermo) -- (quantum);
+        \path [arrow] (classical) -| (relativity);
+        \path [arrow] (relativity) -- (special);
+        \path [arrow] (relativity) -- (general);
+        \path [arrow] (quantum) -| (standard);
+        \path [arrow] (special) -| (standard);
+    \end{tikzpicture}
+\end{center}
+\subsection{Grading} \label{sec:grading}
+\begin{itemize}
+    \item \textbf{Quizzes:} $20\%$.
+    \item \textbf{Midterm:} $40\%$.
+    \item \textbf{Final:} $40\%$.
+\end{itemize}
+
+\section{Classical Physics} \label{sec:classical}
+\subsection{Newton's Laws} \label{sec:newton}
+\begin{enumerate}[label=(\Roman*)]
+    \item In an inertial frame, $\bm{F}_{\mathrm{net}} = 0 \implies \bm{v} =
+        \mathrm{const}$.
+    \item $\ddot{\bm{r}} = \frac{\bm{F}_{\mathrm{net}}}{m}$ where $m$ is the
+        inertial mass.
+    \item For any $2$ particles, $\bm{F}_{12} = -\bm{F}_{21}$.
+\end{enumerate}
+
+\subsubsection{Math: Vector Equations} \label{sec:vector_equations}
+\begin{equation*}
+    \ddot{\bm{r}} = \frac{\bm{F}}{m} \equiv \begin{cases}
+        \ddot{x} = \frac{F_{x}}{m} \\
+        \ddot{y} = \frac{F_{y}}{m} \\
+        \ddot{z} = \frac{F_{z}}{m}
+    \end{cases}
+\end{equation*}
+For a system of $N$ particles, we have $3N$ equations of motion.
+With $6N$ initial conditions, the evolution of the system is uniquely
+determined.
+
+\subsection{Conservation Laws} \label{sec:conservation_laws}
+\subsubsection{Momentum} \label{sec:conservation:momentum}
+\subsubsection{Energy} \label{sec:conservation:energy}
+\subsubsection{Angular Momentum} \label{sec:conservation:angular_momentum}
