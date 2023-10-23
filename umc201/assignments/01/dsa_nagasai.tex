@@ -1,0 +1,163 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}[margin=1in]
+\usepackage{algpseudocodex}
+\usepackage{algorithm}
+
+
+\begin{document}
+
+\section*{Part 2, Problem 1}
+Pingala and Peasant power algorithms are the two algorithms given in the the book. They are written as recursive algorithms. We can capture the idea used in these algorithm to design a iterative algorithm to achieve the same result. The idea is to use the binary representation of the exponent to compute the result. We know that any number can be expressed as a sum of powers of 2. So, we can express the exponent as a sum of powers of 2. Then, we can use the fact that $a^{2^i} = (a^{2^{i-1}})^2$ to compute the result. The pseudo code for the above algorithm is given below.
+\subsection*{Pseudo Code for Peasant Exponentiation}
+\begin{algorithm}
+    \caption{Iterative code for Peasant exponentiation}
+    \begin{algorithmic}[1]
+        \Function {PeasantExponentiation}{$a, n$}
+        \If{$n = 0$}
+            \State \Return $1$
+        \EndIf
+        \State $exponent \gets n$
+        \State $iteration \gets 0$
+        \State $base \gets a$
+        \If{$exponent \% 2 = 1$}
+            \State $result \gets base$
+        \Else
+            \State $result \gets 1$
+        \EndIf
+        \State $exponent = \lfloor \frac{exponent}{2} \rfloor$
+        \While{$exponent > 0$}
+            \State $iteration \gets iteration + 1$
+            \State $base \gets base \times base$
+            \If{$exponent \% 2 = 1$}
+                \State $result \gets result \times base$
+            \EndIf
+            \State $exponent = \lfloor \frac{exponent}{2} \rfloor$
+        \EndWhile
+        \State \Return $result$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\subsubsection*{Observations}
+\begin{enumerate}
+    \item $iteration$ is the number of iterations of the while loop.
+    \item $base$ is the value of $a^{2^i}$ at the beginning of the $i^{th}$ iteration of the while loop. As at the begining $base$ is $a$, and it keeps getting squared. So, $base = a^{2^i}$ at the beginning of the $i^{th}$ iteration.
+    \item $exponent$ is the value of $n$ at the beginning of the $i^{th}$ iteration of the while loop. Moreover, the expression $exponent\%2$ at the $i^{th}$ iteration is equal to $i^{th}$ bit from right in binary representation of $n$ (This is because, remainders obtained by repeated division of 2 gives the binary representation of the number).
+\end{enumerate}
+
+\subsection*{Loop Invariant}
+First, let's express $n$ in binary form as,
+$$n = 2^0\lambda_0 + 2^1\lambda_1 + \ldots + 2^k\lambda_k$$
+where each $\lambda_i \in \{0,1\}$. Then loop invariant is $result = a^{2^0\lambda_0 + \ldots 2^{iteration}\lambda_{iteration}}$ after $iteration^{th}$ iteration of the while loop.
+
+\subsubsection*{Initialization}
+Initially, $iteration = 0$. If $exponent\%2 = 1$, implies $\lambda_0 = 1$, otherwise $\lambda_0 = 0$. We updated the value of result accordingly. In each case, $result = a^{2^0\lambda_0}$. Hence, loop invariant is true.
+
+\subsubsection*{Maintenance}
+Assume the loop invariant is true for some iteration. We need to prove that loop invariant is true for the next iteration. Suppose, the loop invariant is true for $i^{th}$ iteration i.e $$result = a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}}$$
+In the next iteration, $iteration$ is incremented by one. So, $iteration = i + 1$. Also, $base$ is squared. So, $base = a^{2^{i+1}}$. Also, $exponent$ is divided by 2. So, $exponent = \lfloor \frac{n}{2^{i+1}} \rfloor$. Now, we consider the two cases. If $exponent\%2 = 0$, then $\lambda_{i+1} = 0$. So,
+\begin{align*}
+    result &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \\ 
+            &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \times 1 \\ 
+            &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \times a^{2^{i+1} \lambda_{i+1}} \\
+            &= a^{2^0\lambda_0 + \ldots 2^{i+1}\lambda_{i+1}}
+\end{align*}
+So, loop invariant is still true. If $exponent\%2 = 1$, then $\lambda_{i+1} = 1$. In this case, we are multiplying $result$ by $base$. So, new $result$ will be
+\begin{align*}
+    result &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \times a^{2^{i+1}} \\
+        &= a^{2^0\lambda_0 + \ldots 2^{i+1}\lambda_{i+1}}
+\end{align*}
+So, loop invariant is still true. Hence, in all logical flows, loop invariant is true for the next iteration.
+
+\subsubsection*{Termination}
+As $exponent$ is a finite number, if we keep doing floor division, it will eventually reach $0$ because any strictly decreasing sequence of Natural numbers must terminate at some point. More precisely, the loop will terminate just after $iteration = k$. At this point, $exponent = 0$ so the loop terminates. So, $result = a^{2^0\lambda_0 + \ldots 2^{k}\lambda_{k}}$ (due to loop invariant). So, $result = a^n$. Hence, the algorithm is correct.
+
+\subsubsection*{Complexity analysis}
+As noted earlier, the maximum value of $iteration$ is $k$. Therefore, the loop can run atmost $k$ times. In each iteration, we are doing a constant amount of work (addition, multiplication, modulo operation, comparisons all take $O(1)$ amount of work). So, the total work done is $O(k)$. Now, we need to find the value of $k$. We know that $n = 2^0\lambda_0 + 2^1\lambda_1 + \ldots + 2^k\lambda_k$. So, $k = \lfloor \log_2 n \rfloor$. So, the total work done is $O(\log n)$. Therefore, the algorithm runs in $O(\log n)$.
+
+\subsection*{Pseudo Code for Pingala Exponentiation}
+\begin{algorithm}
+    \caption{Iterative code for Pingala exponentiation}
+    \begin{algorithmic}
+        \Function{PingalaExponentiation}{$a, n$}
+            \If{$n = 0$}
+                \State \Return $1$
+            \EndIf
+            \State $result \gets 1$
+            \State $exponent \gets \lfloor \log_2n \rfloor$
+            \While{$exponent \geq 0$}
+                \If{$n < (1 << power)$}
+                    \State $result \gets result \times result$
+                \Else
+                    \State $result \gets result \times result \times a$
+                    \State $n \gets n - (1 << power)$
+                \EndIf
+                \State $exponent \gets exponent - 1$
+            \EndWhile
+            \State \Return $result$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+This pseudo code is very similar to the previous one. The only difference is that we are not using the binary representation of the exponent. We verified that the algorithm is mimicing the recursive algorithm. But, we failed to come up with any loop invariant that would prove the correctness of the algorithm. So, we are not including the proof of correctness here. But, we will do the complexity analysis.
+
+\subsubsection*{Complexity Analysis}
+In each while loop, we are doing a constant amount of work (assuming that $<<$ (left shift operator)) takes $O(1)$ amount of work. The while loop can run at maximum $\lfloor \log_2 n \rfloor$ times as running further would imply that $exponent$ variable goes negative. So, the total work done is $O(\log n)$. Therefore, the algorithm runs in $O(\log n)$.
+
+
+\section*{Part 2, Problem 2}
+We are given with three sorted arrays $A[1\ldots p], B[1\ldots q], C[1\ldots r]$. We are given that there is atleast one common element in all the three arrays. We need to find a common element in all the three arrays. We can solve this problem in $O(n)$ time. This solution is inspired from the "TWO SUM" problem, where we use two pointers to tranverse the array. Instead of two pointers, pointing to same array, here we use three pointers, each one pointing to different array. We start with the first element of each array. We compare the three elements. If they are equal, we return the element. If they are not equal, we increment the pointer pointing to the smallest element. We repeat this process until we find the common element. The pseudo code for the above algorithm is given below.
+
+\begin{algorithm}
+\caption{Common Element in Three Sorted Arrays}
+    \begin{algorithmic}[1]
+    \Function{CommonElement}{$A[ ], B[ ], C[ ], p, q, r$}
+    \State $first \gets 0$
+    \State $second \gets 0$
+    \State $third \gets 0$
+    \While{$first < p$ and $second < q$ and $third < r$}
+        \State $maximal \gets max(A[first], B[second], C[third])$
+        \If{$A[first] = B[second] = C[third]$}
+            \State \Return $(first, second, third)$
+        \EndIf
+        \If{$A[first] < maximal$ }
+            \State $first \gets first + 1$
+        \EndIf
+        \If{$B[second] < maximal$}
+            \State $second \gets second + 1$
+        \EndIf
+        \If{$C[third] < maximal$}
+            \State $third \gets third + 1$
+        \EndIf
+    \EndWhile
+
+    \Return "No common element found"
+    \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+\subsection*{Loop Invariant}
+Let $x$ be the first common element present in all three elements (such an element $x$ is guaranteed by the question itself). Let us also denote $I_D(y)$ as the index of first occurenece of $y$ in the array $D$. Notice that $ I_A(x) < p \; and \; I_B(x) < q \; and \; I_C(x) < r$. Loop Invariant is $$first \leq I_A(x) \quad second \leq I_B(x) \quad third \leq I_C(x) $$ 
+
+\subsubsection*{Initialization}
+Initially, $ \; first = second = third = 0$. So, $I_A(x), I_B(x), I_C(x) \geq 0 = first = second = third$. Hence, loop Invariant is true
+
+\subsubsection*{Maintenance}
+Let us assume that the loop invariant is true for some iteration. We need to prove that the loop invariant is true for the next iteration. if $A[first], B[second], C[third]$ are all equal to each other. Then loop terminates. So, we won't deal with that here. Suppose, that they all are not equal. Then there must be a maximal element among them. WLOG, let $C[third]$ be the maximal element. If $A[first] < C[third]$, we are incrementing the left pointer by one. As $A[first] < C[third]$ and $C[third] \leq x$ (assumption that loop Invariant was true in the beginning of loop), we have $A[first] < x$. 
+This implies, $first < I_A(x)$. So, $first + 1 \leq I_A(x)$. So, incrementing first by one, doesn't effect the loop invariant. Hence, loop Invariant is true for the next iteration. Similarly, we can prove for the case if $B[second] < C[third]$ that loop Invariant is true for the next iteration.
+
+\subsubsection*{Termination}
+First, we will show that loop must terminate at some point. Then, we will show that at the point of termination, our desired outcome is reached.
+In each iteration, atleast one of the pointers is incremented. If the function never returns, the pointers keep on going right till they exceed the size of the array. So, the while condition will be violated (if it doesn't return by then). Hence, loop will terminate. 
+
+Now, I will show that loop will only terminate, when the required condition is satisfied i.e $$A[first] = B[second] = C[third] = x$$
+For the sake of contradiction, assume that loop terminates without satisfying the above condition. Then, it means that loop got terminated due to violation of while loop condition. This means that atleast one of the pointers has exceeded the size of the array. WLOG, let $first$ exceed the size of the array. Then, $first \geq p$. This implies, $I_A(x) \geq first \geq p$ (as loop invariant must maintained through out). This is contradiction to the fact that $I_A(x) < p$. Hence, loop will terminate only when the required condition is satisfied.
+
+\subsection*{Complexity Analysis}
+Notice that in each iteration, we are incrementing atleast one of the pointers and each of them can't exceed their respective array lengths. So, the loop will run atmost $p + q + r$ times. In each iteration, we are doing a constant amount of work (comparisons, addition, incrementing pointers all take $O(1)$ amount of work). So, the total work done is $O(p + q + r)$. Therefore, the algorithm runs in $O(p + q + r)$.
+
+\end{document}

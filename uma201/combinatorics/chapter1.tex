@@ -1,0 +1,263 @@
+\section{Bijections} \label{sec:bijections}
+\begin{definition}[Bijection]
+    Let $A$ and $B$ be sets.
+    A function $f : A \to B$ is a \emph{bijection} if it is both injective and
+    surjective.
+\end{definition}
+\begin{notation}
+    $A \sim B$ denotes that there exists a bijection from $A$ to $B$.
+\end{notation}
+\begin{proposition}[Reflexivity] \label{thm:bijections:reflexivity}
+    For any set $A$, $A \sim A$.
+\end{proposition}
+\begin{proof}
+    Let $f : A \to A$ be the identity function.
+    Then, $f$ is a bijection.
+\end{proof}
+
+\begin{proposition}[Inverse] \label{thm:bijections:inverse}
+    Let $f : A \to B$ be a bijection.
+    Then, there exists a unique function $g : B \to A$ such that
+    $g \circ f = \id_{A}$ and $f \circ g = \id_{B}$.
+\end{proposition}
+\begin{proof}
+    % Let $U$ be the set of unit subsets of $A$, \textit{i.e.}, \[
+    %     U = \set{x \in \mathscr{P}(A) \mid A \sim 1}
+    % \] Let $\textrm{unf} : B \to U$ de defined as \[
+    %     \textrm{unf}(b) = \set{a \in A \mid f(a) = b}.
+    % \] Let $\textrm{unwrap} : U \to A$ be defined as \[
+    %     \textrm{unwrap}(S) = \bigcup S.
+    % \] Let $g = \textrm{unwrap} \circ \textrm{unf}$.
+    % Then, $g$ is a function from $B$ to $A$.
+    We define $g \subseteq B \times A$ as \[
+        g = \set{P \in B \times A \mid \exists a \in A \exists b \in B
+            (P = (b, a) \land (a, b) \in f)
+        }.
+    \] We claim that $g$ is a function.
+    \begin{itemize}
+        \item Let $b \in B$.
+            Since $f$ is surjective, there exists $a \in A$ such that
+            $(a, b) \in f$.
+            Thus, $(b, a) \in g$.
+        \item Let $(b_{0}, a_{0}), (b_{0}, a_{1}) \in g$.
+            Then, there exist $a, a' \in A$ and $b, b' \in B$ such that
+            $(b_{0}, a_{0}) = (b, a)$, $(b_{0}, a_{1}) = (b', a')$,
+            and $(a, b), (a', b') \in f$.
+            But then $b = b' = b_{0}$.
+            Since $f$ is injective, $a = a'$, and so $a_{0} = a_{1}$.
+    \end{itemize}
+
+    Let $a \in A$, and let $b = f(a)$.
+    That is, $(a, b) \in f$.
+    Then, $(b, a) \in g$.
+    Thus $g(f(a)) = g(b) = a$ and so $g \circ f = \id_{A}$.
+
+    Let $b \in B$, and let $a = g(b)$.
+    That is, $(b, a) \in g$.
+    Then, $(a, b) \in f$.
+    Thus $f(g(b)) = f(a) = b$ and so $f \circ g = \id_{B}$.
+
+    Suppose $g' : B \to A$ is a function such that $g' \circ f = \id_{A}$.
+    Let $b \in B$.
+    Since $f$ is surjective, there exists $a \in A$ such that $f(a) = b$.
+    Then, $g'(b) = g'(f(a)) = a = g(f(a)) = g(b)$.
+    Thus, $g = g'$.
+    This proves the uniqueness.
+\end{proof}
+\begin{theorem} \label{thm:bijections:construction}
+    Let $f : A \to B$ and $g : B \to A$ be functions such that
+    $g \circ f = \id_{A}$ and $f \circ g = \id_{B}$.
+    Then, $f$ is a bijection.
+\end{theorem}
+\begin{proof}
+    Let $a_{1}, a_{2} \in A$ with $f(a_{1}) = f(a_{2})$.
+    Then, $a_{1} = g(f(a_{1})) = g(f(a_{2})) = a_{2}$.
+    Thus, $f$ is injective.
+
+    Let $b \in B$.
+    Then, $b = f(g(b))$.
+    Thus, $f$ is surjective.
+\end{proof}
+
+\begin{proposition}[Symmetry] \label{thm:bijections:symmetry}
+    If $A \sim B$, then $B \sim A$.
+\end{proposition}
+\begin{proof}
+    By \cref{thm:bijections:inverse,thm:bijections:construction}.
+\end{proof}
+\begin{proposition}[Composition] \label{thm:bijections:composition}
+    If $f : A \to B$ and $g : B \to C$ are bijections, then
+    $g \circ f : A \to C$ is a bijection.
+\end{proposition}
+\begin{proof}
+    Let $a_{1}, a_{2} \in A$ with $g(f(a_{1})) = g(f(a_{2}))$.
+    Since $g$ is injective, $f(a_{1}) = f(a_{2})$.
+    Since $f$ is injective, $a_{1} = a_{2}$.
+    Thus, $g \circ f$ is injective.
+
+    Let $c \in C$.
+    Since $g$ is surjective, there exists $b \in B$ such that $g(b) = c$.
+    Since $f$ is surjective, there exists $a \in A$ such that $f(a) = b$.
+    Thus, $g \circ f$ is surjective.
+\end{proof}
+\begin{corollary}[Transitivity] \label{thm:bijections:transitivity}
+    If $A \sim B$ and $B \sim C$, then $A \sim C$.
+\end{corollary}
+
+\begin{theorem}[Equivalence] \label{thm:bijections:equivalence}
+    $\sim$ is an equivalence relation on any set of sets.
+\end{theorem}
+\begin{proof}
+    By \cref{thm:bijections:reflexivity,thm:bijections:symmetry,thm:bijections:transitivity}.
+\end{proof}
+\begin{notation} \leavevmode
+    \begin{enumerate}
+        \item $\omega$ denotes the minimal inductive set.
+    \end{enumerate}
+\end{notation}
+
+\begin{theorem} \label{thm:bijections:omega}
+    Let $m, n \in \omega$.
+    Then, $m \sim n$ if and only if $m = n$.
+\end{theorem}
+\begin{proof}
+    We prove this by induction on $m$.
+    Let \[
+        U = \set{m \in \omega \mid \forall n \in \omega (m \sim n \iff m = n)}.
+    \]
+    We first show that $\O \in U$.
+    Let $n \in \O$ such that $\O \sim n$.
+    Then, there exists a bijection $f : \O \to n$.
+    Since $f$ is surjective, $\forall n_{0} \in n \exists m_{0} \in \O$ such that
+    $(m_{0}, n_{0}) \in f$.
+    But $f \subseteq \O \times n = \O$ and so $f = \O$.
+    Thus $n = \O$.
+
+    Now suppose $m \in U$.
+    Let $n \in \omega$ such that $m^{+} \sim n$.
+    We know that $m^{+} \neq \O$ and so $n \neq \O$ (by the base case).
+    Thus there exists $n^{-} \in n$ such that $n = (n^{-})^{+}
+    = n^{-} \cup \set{n^{-}}$.
+    
+    Let $f$ be a bijection from $m^{+}$ to $n$.
+    Then there exists an $m_{0} \in m^{+}$ such that $f(m_{0}) = n^{-}$.
+    We have two cases.
+    \begin{itemize}
+        \item[($m_{0} = m$)] Let $f' = f \setminus \set{(m, n^{-})}$.
+        \item[($m_{0} \neq m$)] Let $f' = f \setminus
+            \set{(m, f(m)), (m_{0}, n^{-})} \cup \set{(m_{0}, f(m))}$.
+    \end{itemize}
+    Then, $f' : m \to n^{-}$ is a bijection.
+    Thus by the induction hypothesis, $m = n^{-}$ and so $m^{+} = n$.
+
+    By induction, $U = \omega$.
+\end{proof}
+
+\section{Cardinality} \label{sec:cardinality}
+\begin{definition}[Finite Cardinality] \label{def:cardinality:finite}
+    Let $A$ be a set.
+    We say that $A$ is finite if there exists an $n \in \omega$ such that
+    $A \sim n$.
+    We say that the \emph{cardinality} of $A$ is $n$ and write $\size{A} = n$.
+\end{definition}
+\begin{remark}
+    $n$ is guaranteed to be unique by \cref{thm:bijections:omega,thm:bijections:equivalence}.
+\end{remark}
+
+\begin{lemma}[Disjoint Union] \label{thm:cardinality:disjoint_union}
+    Let $A$ and $B$ be disjoint finite sets.
+    Then, $\size{(A \cup B)} = \size{A} + \size{B}$.
+\end{lemma}
+\begin{proof}
+    Let $n = \size{A}$ and $m = \size{B}$.
+    Then, there exist bijections $f : A \to n$ and $g : B \to m$.
+    Let $h : A \cup B \to n + m$ be defined as \[
+        h(x) = \begin{cases}
+            f(x) & x \in A \\
+            n + g(x) & x \in B
+        \end{cases}
+    \] Then, $h$ is a bijection.
+\end{proof}
+
+\begin{corollary}[Difference] \label{thm:cardinality:difference}
+    Let $A$ and $B$ be finite sets with $B \subseteq A$.
+    Then $\size{(A \setminus B)} = \size{A} - \size{B}$.
+\end{corollary}
+\begin{proof}
+    $A \setminus B \cup B = A$ and $A \setminus B \cap B = \O$.
+    Thus 
+\end{proof}
+\begin{theorem}[Union] \label{thm:cardinality:union}
+    Let $A$ and $B$ be finite sets.
+    Then, $\size{(A \cup B)} = \size{A} + \size{B} - \size{(A \cap B)}$.
+\end{theorem}
+\begin{proof}
+    We have $A \cup B = (A \setminus (A \cap B)) \cup B$ where
+    $A \setminus (A \cap B)$ and $B$ are disoint.
+    Thus
+    \begin{align*}
+        \size{(A \cup B)} &= \size{(A \setminus (A \cap B))} + \size{B} \\
+        &= \size{A} + \size{B} - \size{(A \cap B)}. \qedhere
+    \end{align*}
+\end{proof}
+
+\begin{theorem}[Product] \label{thm:cardinality:product}
+    Let $A$ and $B$ be finite sets with cardinalities $n$ and $m$ respectively.
+    Then, $\size{(A \times B)} = n \times m$.
+\end{theorem}
+\begin{proof}
+    We prove this by induction over $m$.
+    The case $m = 0$ is trivial.
+
+    Let $m = 1$.
+    Then, $B = \set{b}$ for some $b$.
+    Let $f = a \in A \mapsto (a, b) \in A \times B$.
+    $f$ is a bijection and so $\size{(A \times B)} = \size{A} = n = n \times 1$.
+
+    Suppose $m \in \omega \setminus \set{0, 1}$ and the theorem holds for $m$.
+    Let $A$ be a set with cardinality $n$ and $B$ be a set with Cardinality
+    $m^{+}$.
+    Then $B \sim m \cup \set{m}$.
+
+    Let $f : m \cup \set{m} \to B$ be a bijection.
+    Consider $B' = B \setminus f(m)$.
+    Then, $B' \sim m$ and so $\size{(A \times B')} = n \times m$.
+
+    We have \begin{align*}
+        A \times B &= \set{x \in \pset{\pset{A \cup B}} \mid \exists a \in A 
+        \exists b \in B (x = (a, b))} \\
+        \shortintertext{and}
+        A \times B' &= \set{x \in \pset{\pset{A \cup B}} \mid \exists a \in A
+        \exists b \in B' (x = (a, b))}. \\
+        A \times \set{f(m)} &= \set{x \in \pset{\pset{A \cup B}} \mid \exists
+            a \in A (x = (a, f(m)))}.
+    \end{align*}
+    We first note that $A \times B'$ and $A \times \set{f(m)}$ are disjoint.
+    This is since $x \in A \times \set{f(m)}$ implies $x = (a, f(m))$ for some
+    $a \in A$, but $f(m) \notin B'$ and so $x \notin A \times B'$.
+
+    We now prove that $A \times B = (A \times B') \cup (A \times \set{f(m)})$.
+    \begin{itemize}
+        \item Let $x \in A \times B$.
+            Then there exist $a \in A$ and $b \in B$ such that $x = (a, b)$.
+            If $b \in B'$, then $x \in A \times B'$.
+            Else $b = f(m)$ and so $x \in A \times \set{f(m)}$.
+        \item Let $x \in (A \times B') \cup (A \times \set{f(m)})$.
+            Then $x \in A \times B'$ or $x \in A \times \set{f(m)}$.
+            In either case, $x \in A \times B$.
+    \end{itemize}
+
+    Thus
+    \begin{align*}
+        A \times B &= (A \times B') \cup (A \times \set{f(m)}) \\
+        \size{(A \times B)} &= \size{(A \times B')} + \size{(A \times \set{f(m)})} \\
+        &= n \times m + n \\
+        &= n \times m^{+}.
+    \end{align*}
+    By induction, the theorem holds for all $m \in \omega$.
+\end{proof}
+
+\begin{theorem}[Power Set] \label{thm:cardinality:power_set}
+    Let $A$ be a finite set with cardinality $n$.
+    Then, $\size{\pset{A}} = 2^{n}$.
+\end{theorem}

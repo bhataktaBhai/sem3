@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+\input{../preamble}
+\usepackage{geometry}
+\geometry{a4paper}
+
+\title{Homework 05}
+\author{Naman Mishra\\
+    22223\\
+    Section A}
+\date{08 September, 2023}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{3}
+\begin{problem}
+    Suppose $r$ distinguishable balls are thrown at random into $m$ labelled
+    bins.
+    Let $A_k$ be the event that the $k$th bin is empty.
+    \begin{enumerate}[label=(\alph*)]
+        \item Are $A_1, A_2, A_3$ independent?
+        \item What happens (regarding independence) if $r = 3m$ and $m \to \infty$.
+    \end{enumerate}
+\end{problem}
+\begin{proof}[Solution]
+    We model the sample space as \[
+        \Omega = [m]^{r} \qquad p : \omega \mapsto \frac{1}{m^r}.
+    \] We have \[
+        A_k = ([m] \setminus \set{k})^r
+    \] and more generally, \[
+        \bigcap_{j \in J} A_j = ([m] \setminus J)^r
+    \] for any $J \subseteq [m]$.
+
+    Since the probability distribution is uniform, we have \begin{align*}
+        \Pr\Big(\bigcap_{j \in J} A_j\Big) &= \frac{\size{([m] \setminus J)}^r}{m^r} \\
+        &= \frac{(m - \size{J})^{r}}{m^r} \\
+        &= \left(1 - \frac{\size{J}}{m}\right)^{r}
+    \end{align*}
+    Thus \begin{align*}
+        \Pr(A_1) = \Pr(A_2) = \Pr(A_3) &= \left(1 - \frac{1}{m}\right)^{r} \\
+        \Pr(A_1 \cap A_2) = \Pr(A_1 \cap A_3) = \Pr(A_2 \cap A_3) &= \left(1 - \frac{2}{m}\right)^{r} \\
+        \Pr(A_1 \cap A_2 \cap A_3) &= \left(1 - \frac{3}{m}\right)^{r}
+    \end{align*}
+    Note that \begin{align*}
+        \Pr(A_1 \cap A_2) &= \Pr(A_1) \Pr(A_2) \\
+        \iff \frac{(m - 2)^r}{m^r} &= \frac{(m - 1)^{2r}}{m^{2r}} \\
+        \iff (m - 2) m &= (m - 1)^2 \\
+        \iff 0 &= 1
+    \end{align*} for $r > 0$, which is a contradiction.
+    Thus $A_1$, $A_2$, and $A_3$ are dependent.
+    More strongly, by symmetry, they are pairwise dependent.
+
+    Now suppose $r = 3m$.
+    Then \begin{align*}
+        \Pr\Big(\bigcap_{j \in J} A_j\Big) &= \left(1 - \frac{\size J}{m}\right)^{3m} \\
+        \lim_{m \to \infty} \Pr\Big(\bigcap_{j \in J} A_j\Big) &= e^{-3\size J}
+    \end{align*}
+    Thus $\lim_{m \to \infty} \Pr(A_k) = e^{-3}$.
+    Notice that \begin{align*}
+        \lim_{m \to \infty} \prod_{j \in J} \Pr(A_j) &= \prod_{j \in J} \lim_{m \to \infty} \Pr(A_j) \tag{all limits exist} \\
+        &= \prod_{j \in J} e^{-3} \\
+        &= e^{-3\size J} \\
+        &= \lim_{m \to \infty} \Pr\Big(\bigcap_{j \in J} A_j\Big)
+    \end{align*}
+    Thus $A_1, A_2, A_3$ are independent in the limit.
+    In fact, any finite set of $A_k$ is independent in the limit.
+\end{proof}
+
+\begin{problem}
+    Let $A$ and $B$ be events of positive probability in a probability space,
+    such that the probability of their intersection is also positive.
+    \begin{enumerate}[label=(\arabic*)]
+        \item Show that $\Pr(A \given B) = \Pr(B \given A)$ if and only if
+            $\Pr(A) = \Pr(B)$.
+        \item Show that $\Pr(A \given B) > \Pr(A)$ if and only if
+            $\Pr(B \given A) > \Pr(B)$.
+    \end{enumerate}
+\end{problem}
+\begin{proof}[Solution] \leavevmode
+    We simply manipulate equations and inequalities using the fact that
+    $\Pr(A)$, $\Pr(B)$ and $\Pr(A \cap B)$ are all positive.
+    \begin{enumerate}[label=(\arabic*)]
+        \item We have
+            \begin{alignat*}{2}
+                \Pr(A \given B) = \Pr(B \given A) &\iff \frac{\Pr(A \cap B)}{\Pr(B)} &= \frac{\Pr(A \cap B)}{\Pr(A)} \\
+                &\iff \frac{1}{\Pr(B)} &= \frac{1}{\Pr(A)} \\
+                &\iff \Pr(A) &= \Pr(B)
+            \end{alignat*}
+        \item We have
+            \begin{alignat*}{2}
+                \Pr(A \given B) > \Pr(A) &\iff& \frac{\Pr(A \cap B)}{\Pr(B)} &> \Pr(A) \\
+                &\iff& \Pr(A \cap B) &> \Pr(A) \Pr(B) \\
+                &\iff& \frac{\Pr(B \cap A)}{\Pr(A)} &> \Pr(B) \\
+                &\iff& \Pr(B \given A) &> \Pr(B) \tag*{\qedhere}
+            \end{alignat*}
+    \end{enumerate}
+\end{proof}
+
+\end{document}

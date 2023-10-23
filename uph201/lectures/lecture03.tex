@@ -1,0 +1,54 @@
+\lecture{03}{Wed 9 Aug '23}{}
+
+Every path is a deviation from the classical path. \begin{align*}
+    q(t) &= q_{cl}(t) + \delta q(t) \\
+    \text{with } \delta q(t_{1}) &= \delta q(t_{2}) = 0
+\end{align*}
+Let $q_{0}(t)$ be the optimal solution, \textit{i.e.}, $\pdv{S}{q} \equiv 0$.
+\begin{align*}
+    q(t) &= q_{0}(t) + \delta q(t) \\
+    \dot{q}(t) &= \dot{q}_{0}(t) + \delta \dot{q}(t) \\
+    \delta S &= \int_{t_{1}}^{t_{2}}
+        L(t, q(t), \dot{q}(t)) - L(t, q_{0}(t), \dot{q}_{0} (t)) \dd x
+\end{align*}
+For small $\delta q$, \textit{i.e.},
+$\delta q(t) \ll q(t) \forall t \in [t_{1}, t_{2}]$,
+\begin{align*}
+    \delta S &= \int_{t_{1}}^{t_{2}} \pdv{L}{q}(t, q_{0}(t), \dot{q}_{0}(t)) \dd x
+\end{align*}
+% \begin{align*}
+%     \int_{t_{1}}^{t_{2}} \pdv{L(q, \dot{q}, t)}{q} \dd t &= 0
+% \end{align*}
+% We derive \[
+%     \boxed{\dv{}{t}\left(\pdv{L}{\dot{q}}\right) - \pdv{L}{q} = 0}
+% \]
+\begin{examples}
+    \item \textbf{Free particle:} $L = \frac{1}{2} m \dot{q}^{2}$, so
+        \begin{align*}
+            \dv{}{t}\left(\pdv{L}{\dot{q}}\right) &= 0 \\
+            \dv{}{t}{}(m \dot{q}) &= 0 \\ % TODO: wtf
+            \ddot{q} &= 0.
+        \end{align*}
+    \item $L = \frac{1}{2} m \dot{q}^{2} - V(q)$.
+        \begin{align*}
+            \dv{}{t}\left(\pdv{L}{\dot{q}}\right) - \pdv{L}{q} &= 0 \\
+            \dv{}{t}(m \dot{q}) + \pdv{V}{q} &= 0 \\
+            m \ddot{q} &= - \pdv{V}{q}.
+        \end{align*}
+\end{examples}
+
+In general, for a Lagrangian specified by
+$L(q_{1}, \dots, q_{f}, \dot{q}_{1}, \dots, \dot{q}_{f}, t)$, \[
+    \dv{}{t}\left(\pdv{L}{\dot{q}_{i}}\right) - \pdv{L}{q_{i}} = 0 \text{ for } i = 1, \dots, f.
+\] If $L$ does not depend on $q_{j}$ \emph{explicitly} for some $j$, then \[
+    \dv{}{t} \pdv{L}{\dot{q}_{j}} \equiv 0
+\] Such a coordinate is called a \textbf{cyclical} or \textbf{ignorable coordinate}.
+
+This is a generalised way of understanding conservation laws.
+\begin{itemize}
+    \item $\theta$-independent Lagrangians have rotational symmetry, so
+        angular momentum is conserved.
+    \item $x$-independent Lagrangians have translational symmetry, so linear
+        momentum is conserved.
+    \item $t$-independent Lagrangians have time symmetry, so energy is conserved.
+\end{itemize}

@@ -1,0 +1,43 @@
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs} % for \mathscr
+\usepackage{bm} % for \bm
+
+\usepackage{mathtools} % for delimiters and \coloneqq
+\DeclarePairedDelimiter{\oldparen}{(}{)}
+\DeclarePairedDelimiter{\oldbrk}{[}{]}
+\DeclarePairedDelimiter{\oldset}{\{}{\}}
+\DeclarePairedDelimiter{\oldabs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\oldnorm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\oldfloor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\oldceil}{\lceil}{\rceil}
+
+\makeatletter
+\def\paren{\@ifstar{\oldparen}{\oldparen*}}
+\def\brk{\@ifstar{\oldbrk}{\oldbrk*}}
+\def\set{\@ifstar{\oldset}{\oldset*}}
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\def\floor{\@ifstar{\oldfloor}{\oldfloor*}}
+\def\ceil{\@ifstar{\oldceil}{\oldceil*}}
+\makeatother
+
+\newcommand\N{hi}
+\renewcommand\N{\ensuremath{\mathbb{N}}}
+\newcommand\R{\ensuremath{\mathbb{F}}}
+\newcommand\Z{\ensuremath{\mathbb{Z}}}
+\renewcommand\O{\ensuremath{\varnothing}}
+\renewcommand\P{\ensuremath{\mathbb{P}}}
+\newcommand\Q{\ensuremath{\mathbb{Q}}}
+\newcommand\C{\ensuremath{\mathbb{C}}}
+
+% make \epsilon and \varepsilon the same
+\let\epsilon\varepsilon
+% fix spacing for \forall and \exists
+\let\oldforall\forall
+\renewcommand{\forall}{\oldforall \, }
+\let\oldexist\exists
+\renewcommand{\exists}{\oldexist \: }
+\newcommand\existu{\oldexist! \: }
+
+\providecommand{\dd}{\,\mathrm{d}}

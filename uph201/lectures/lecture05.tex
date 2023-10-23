@@ -1,0 +1,91 @@
+\lecture{05}{Wed 16 Aug '23}{}
+
+\subsection{First Law of Thermodynamics} \label{sec:FLOT}
+Defines \emph{internal energy}.
+
+When $\delta q$ is the heat supplied to the system, and $\delta w$ is the work
+done by the system, then the first law of thermodynamics states that the change
+in internal energy $U$ is given by \[
+    \dd U = \delta q + \delta w.
+\] This is a restatement of the conservation of energy, more generalised than in
+mechanics.
+
+How do we measure $\delta q$ and $\delta w$?
+
+\subsubsection{Heat} \label{sec:heat}
+\emph{Specific heat} ($C$) is the energy required to change the temperature of
+a unit mass of a substance by one kelvin.
+
+\emph{Molar specific heat} ($C_{\textrm{mol}}$) is the energy required to change
+the temperature of a mole of a substance by one kelvin.
+\[
+    \delta q = m C \Delta T.
+\] Since heat (and work) is path dependent, we need to specify more than just
+the initial and final states of the system.
+We must also specify the path taken by the system.
+
+Two common paths are \emph{isobaric} and \emph{isochoric}.
+The corresponding specific heats are \emph{specific heat at constant pressure}
+($C_p$) and \emph{specific heat at constant volume} ($C_v$).
+
+In case of solids and liquids, $C_p \approx C_v$.
+
+We can however generalise the specific heat at constant volume to
+\emph{anergetic specific heat} ($C_{\textrm{an}}$).
+This is along a path where no work is done by the system.
+In the particular case of an ideal gas, this path is the same as the isochoric
+one. \\
+\hrule
+Not all heating processes lead to an increase in temperature.
+For example, heating a block of ice at $\SI{-10}{C}$ will look
+like:
+\begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+                xlabel=$t$,
+                ylabel=$T$,
+                % xmin=-10,
+                % xmax=300,
+                % ymin=-10,
+                % ymax=110,
+                % axis lines=middle,
+                % xtick={-10, 0, 100},
+                % ytick={0, 100},
+                xticklabels={},
+                % yticklabels={$0$, $100$},
+                % legend pos=north west,
+            ]
+            \addplot[domain=-10:0, color=red] {x};
+            \addplot[domain=0:20, color=green] {0};
+            \addplot[domain=20:120, color=red] {x-20};
+            \addplot[domain=120:170, color=green] {100};
+            \addplot[domain=170:220, color=red] {x-70};
+            % \legend{$\delta q$, $\delta w$, $\dd U$}
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
+\hrule
+
+\subsubsection{Work} \label{sec:work}
+Work done by an ideal gas is defined as \[
+    \delta w = p \dd V.
+\] Is this $p$ the internal pressure or the external pressure?
+
+For \emph{any} process from state $1$ to $2$, \[
+    U_{2} - U_{1} = Q - W,
+\] irrespective of the path taken.
+
+But what does the ``path'' mean here?
+\begin{center}
+    \begin{tikzpicture}
+        \draw (0, 0) node[left]{1}
+            .. controls (2, 1) and (2, -2) ..
+            (3, -2) node[right]{2};
+    \end{tikzpicture}
+\end{center}
+Every point along a curve describing a thermodynamic process is an equilibrium
+state.
+This is called a \emph{quasi-static} process.
+Such a process must take infinite time to complete.
+
+In such a process, the internal and external pressures are always equal.

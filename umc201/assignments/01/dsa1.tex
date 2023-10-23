@@ -1,0 +1,239 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, amsthm, mathtools,}
+\usepackage[ruled, lined, longend]{algorithm2e} 
+\title{DSA Assignment 1}
+\author{Ishaq Hamza (22187), Nagasai (), Naman Mishra ()}
+\date{UMC201}
+\begin{document}
+\maketitle
+\section*{Question 2.6}
+\textbf{Notation:} $A[a_1,..., a_2][b_1,...,b_2]$ denotes the following subset of the array $A[m][n]$
+$$\{A[i][j] ~ \vert a_1 \leq i \leq a_2, ~ j = 1,...,n\} \cup \{A[i][j] ~ \vert b_1 \leq i \leq b_2, ~ i = 1,...,m\}$$
+\subsection*{Part a}
+\begin{algorithm}
+    \KwIn{an $n \times n$ array $A[n][n]$ of integers which is sorted row-wise and column-wise, integer $x$}
+    \KwOut{index $(i, j)$ of the element $x$ if present or NULL if absent in the array}
+    \For{$i = 1$ \KwTo $n$}{
+        t = binarySearch($A[i][1,...,n]$, $x$)\; 
+        \If{$t \neq -1$}{
+            return $(i, t)$\;
+        }
+    }
+    return NULL\;
+    \caption{$\mathcal{O}(n \log n)$ algorithm to search for an element in a sorted row-wise and column-wise array}
+\end{algorithm}
+Here the binarySearch function is the same as we discussed in class.\\
+\textbf{Proof of Correctness}\\
+\textbf{Loop Invariant:} $\mathsf{L}(i): x \notin A[1,...,i-1][1,...,n]$\\
+\textbf{Base Case:} $i = 1$\\
+$$\mathsf{L}(1): x \notin A[1,...0][1,...,n]$$
+the above holds trivially as the array $A[1,...,0][1,...,n]$ is empty.\\
+\textbf{Inductive Step:} assume that $\mathsf{L}(i)$ holds before entering the loop\\
+$$x \notin A[1,...,i-1][1,...,n]$$
+\textbf{Case 1:} $x \notin A[i][1,...,n]$\\
+    \begin{align*}
+        &\implies x \notin A[1,...,i-1][1,...,n] \cup A[i][1,...,n]\\
+        &\implies \mathsf{L}(i+1)\\
+    \end{align*}
+    $i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 2:} $x \in A[i][1,...,n]$\\
+binarySearch returns the index of $x$ in $A[i][1,...,n]$, therefore the algorithm returns the index $(i, t)$ and the loop breaks, hence $\mathsf{L}$ holds vacuously\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when $i = n+1$\\
+$\mathsf{L}(n+1)$: $x \notin A[1,...,n][1,...,n]$ (which is the complete array)\\
+$\implies x \notin A$, output should be NULL.
+$$\mathbb{Q} \mathbb{E} \mathbb{D} $$
+\textbf{Time Complexity:} the loop runs for $n$ iterations and each iteration performs a binary search on an array of size $n$, hence the time complexity is $\mathcal{O}(n \log n)$\\
+\newpage
+\subsection*{Part b}
+\begin{algorithm}
+    \KwIn{an $m \times n$ array $A[m][n]$ of integers which is sorted row-wise and column-wise, integer $x$}
+    \KwOut{index $(i, j)$ of the element $x$ if present or NULL if absent in the array}
+    $i = m$, $j = 1$\;
+    \While{$i > 0$ and $j < n+1$}{
+        \If{$A[i][j] < x$}{
+            $i--$\;
+        }
+        \ElseIf{$A[i][j] < x$}{
+            $j++$\;
+        }
+        \Else{
+            return $(i, j)$\;
+        }
+    }
+    \caption{$\mathcal{O}(m + n)$ algorithm to search for an element in a sorted row-wise and column-wise array}
+\end{algorithm}
+\textbf{Proof of Correctness}\\
+
+we define the loop invariant $\mathsf{L}$ as follows:\\
+$$\mathsf{L}(i, j): x \notin A[i+1,...,m][1,...,j-1]$$
+we shall prove the invariance inductively\\
+\textbf{Base Case:} $i = m, j = 1$\\
+$$\mathsf{L}(m, 1): x \notin A[m+1,...,m][1,...,0]$$
+the above statement holds trivially as in the array $A[m+1,...,m][1,..,0]$ is empty\\\\
+\textbf{Inductive Step:} assume that $\mathsf{L}(i, j)$ and the loop condition hold before entering the loop\\
+$$x \notin A[i+1,...,m][1,...,j-1]$$
+\textbf{Case 1:} $A[i][j] > x$\\
+    \begin{align*}
+        &\implies x < A[i][j] \leq A[i][j+1] \leq ... \leq A[i][n]\\
+        &\implies x \notin A[i][j,j+1...,n]\\
+    \end{align*}
+    this result when combined with the induction hypothesis yeilds
+    $$x \notin A[i+1,...,m][1,...,j-1] \cup A[i][j,j+1,...,n] ~ (= A[i,...,m][1,...,j])$$
+    $$\implies \mathsf{L}(i+1, j)$$
+    $i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 2:} $A[i][j] < x$\\
+    \begin{align*}
+        &\implies x > A[i][j] \geq A[i-1][j] \geq ... \geq A[1][j]\\
+        &\implies x \notin A[1,2,...,i-1][j]\\
+    \end{align*}
+    this result when combined with the induction hypothesis yeilds
+    $$x \notin A[i+1,...,m][1,...,j-1] \cup A[1,2,...,i-1][j] ~ (= A[1,...,i][j,...,n])$$
+    $$\implies \mathsf{L}(i, j+1)$$
+    $j \mapsto j+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 3:} if $A[i][j] = x$, then the algorithm returns the index and the loop breaks, hence $\mathsf{L}$ holds vacuously\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when either $i = 0$ or $j = n+1$\\
+\textbf{Case 1:} i = 0\\
+$\mathsf{L}(0, j)$: $x \notin A[1,...,m][1,...,j-1]$ (which is the complete array)\\
+$\implies x \notin A$, output should be NULL.\\
+\textbf{Case 2:} j = n+1\\
+$\mathsf{L}(i, n+1)$: $x \notin A[i+1,...,m][1,...,n]$ (which is the complete array)\\
+$\implies x \notin A$, output should be NULL.
+$$\mathbb{Q} \mathbb{E} \mathbb{D} $$
+\textbf{Time Complexity:} the loop runs for at most $m+n$ iterations and each iteration performs a constant number of comaprisons and updates, hence the time complexity is $\mathcal{O}(m+n)$\\\\
+\\
+\section*{Question 2.7}
+first we define the following function $t-Asum$
+\newpage
+\begin{algorithm}
+    \KwIn{an array $A[1,...,n]$ of integers and an integer $t$ such that $1 \leq t \leq n$}
+    \KwOut{an array $A'[1,...,n-t+1]$ such that $A'[i] = A[i]+...+A[i+t-1]$}
+    $A'[1] = A[1]+...+A[t]$\;
+    \For{$i = 2$ to $n-t+1$}{
+        $A'[i] = A'[i-1] - A[i-1] + A[i+t-1]$\;
+    }
+    return $A'$\;
+    \caption{$\varTheta(n)$ algorithm to compute the array $A'$} 
+\end{algorithm}
+\textbf{Proof of Correctness}\\
+\textbf{Loop Invariant:} $\mathsf{L}(i): A'[i] = A[i]+...+A[i+t-1]$\\
+\textbf{Base Case:} $i = 1$\\
+$$\mathsf{L}(1): A'[1] = A[1]+...+A[t]$$
+the above holds trivially as $A'[1] = A[1]+...+A[t]$\\
+\textbf{Inductive Step:} assume that $\mathsf{L}(i)$ holds before entering the loop\\
+$$A'[i] = A[i]+...+A[i+t-1]$$
+\begin{align*}
+    A'[i+1] &= A'[i] - A[i] + A[i+t]\\
+    &= A[i]+...+A[i+t-1] - A[i] + A[i+t]\\
+    &= A[i+1]+...+A[i+t]\\
+\end{align*}
+$i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when $i = n-t+1$\\
+this is guaranteed since $i$ is incremented by 1 in each iteration and the loop condition is $i \leq n-t+1$\\
+\textbf{Time Complexity:} the loop runs for $n-t+1$ iterations and each iteration performs a constant number of additions and subtractions, hence the time complexity is $\varTheta(n)$\\\\
+\subsection*{Part a}
+\begin{algorithm}
+    \KwIn{two arrays of integers $A[1,...,n]$ and $B[1,...,n]$}
+    \KwOut{$(i, j, t)$ where $A[i]+...+A[i+t-1] = B[j],...,B[j+t-1]$ if such subarrays exist, otherwise returns the special value NIL}
+    \For{$t = 1$ to $n$}{
+        \For{$i = n$ to $n-t+1$}{
+            $A' = t-Asum(A)$
+            $B' = t-Asum(B)$
+        }
+        \For{$i = 1$ to $n$}{
+            \For{$j = 1$ to $n$}{
+                \If{$A'[i] = B'[j]$}{
+                    return $(i, j, t)$\;
+                }
+            }
+        } 
+    }
+    return NIL\;
+    \caption{$\varTheta(n^3)$ algorithm to find $t$ consecutive elements in one array whose sum is the same as the sum of $t$ consecutive elements in the other array}
+\end{algorithm}
+\textbf{Time Complexity:} in the $t^{th}$ iteration of the outermost loop, first the array is made by calling the $t-Asum$ which is $\varTheta(n)$.
+\begin{align*}
+    \sum_{t=1}^{n}\varTheta(n) &= \varTheta(n^2)\\
+\end{align*}                                                                                                                                         
+the inner two loops comapre each pair of elements $(A'[i], B'[j])$ of the loops, hence the total number of comparisons is $\binom{n-t+1}{2}$.\\
+\begin{align*}
+    \sum_{t=1}^{n}\binom{n-t+1}{2} &= \sum_{t=1}^{n}\frac{(n-t+1)(n-t)}{2}\\
+    &= \frac{1}{2}\sum_{t=1}^{n}(n^2 - 2nt + t^2 - n + t)\\
+    &= \frac{1}{2}(\sum_{t=1}^{n}t^2 - (2n + 1)\sum_{t=1}^{n} + \sum{t=1}{n}n(n+1))\\
+    &= \frac{1}{2}(\frac{n(n+1)(2n+1)}{6} - (2n+1)\frac{n(n+1)}{2} + n^2(n+1))\\
+    &= \frac{(n-1)(n)(n+1)}{6}\\
+    \frac{n^3}{6} < & ~ \frac{(n-1)(n)(n+1)}{6} < \frac{n^3}{3} ~ \forall n>1\\
+\end{align*}
+hence the time complexity is $\varTheta(n^3)$\\\\
+\newpage
+\subsection*{Part b}
+\begin{algorithm}
+    \KwIn{two arrays of integers $A[1,...,n]$ and $B[1,...,n]$}
+    \KwOut{$(i, j, t)$ where $A[i]+...+A[i+t-1] = B[j],...,B[j+t-1]$ if such subarrays exist, otherwise returns the special value NIL}
+    \For{$t = 1$ to $n$}{
+        $A' = t-Asum(A)$
+        $B' = t-Asum(B)$
+        $sA'$ = sort($A'$)\;
+        $sB'$ = sort($B'$)\;
+        i = 1, j = 1\;
+        \While{$i \leq n-t$ and $j \leq n-t$}{
+            \If{$sA'[i] > sB'[j]$}{
+                $j++$\;
+            }
+            \ElseIf{$sA'[i] < sB'[j]$}{
+                $i++$\;
+            }
+            \Else{
+                return $(i, j, t)$\;
+            }
+        }
+    }
+    return NIL\;
+    \caption{$\varTheta(n^2 \log(n))$ algorithm to find $t$ consecutive elements in one array whose sum is the same as the sum of $t$ consecutive elements in the other array}
+\end{algorithm}
+Here, the sort function is assumed to work in $\varTheta(n \log n)$ time.\\
+\textbf{Proof of Correctness}\\
+we define the loop invariant $\mathsf{L}$ as follows:\\
+$$\mathsf{L}(i, j): A'[a] \neq B'[b] ~ \forall a < i, ~ b < j$$
+we shall prove the invariance inductively\\
+\textbf{Base Case:} $i = 1, j = 1$\\
+$$\mathsf{L}(1, 1): A'[a] \neq B'[b] ~ \forall a < 1, ~ b < 1$$
+the above statement holds trivially as the array $A'[a] \neq B'[b] ~ \forall a < 1, ~ b < 1$ is empty\\\\
+\textbf{Maintenance:} assume that $\mathsf{L}(i, j)$ and the loop condition hold before entering the loop\\
+$$A'[a] \neq B'[b] ~ \forall a < i, ~ b < j$$
+\textbf{Case 1:} $A'[i] > B'[j]$\\
+    $$A'[a] \neq B'[b] ~ \forall a < i, ~ b < j+1$$
+    $$\implies \mathsf{L}(i, j+1)$$
+    $j \mapsto j+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 2:} $A'[i] < B'[j]$\\
+    $$A'[a] \neq B'[b] ~ \forall a < i, ~ b < j+1$$
+    $$\implies \mathsf{L}(i+1, j)$$
+    $i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 3:} if $A'[i] = B'[j]$, then the algorithm returns the index and the loop breaks, hence $\mathsf{L}$ holds vacuously\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when either $i = n-t+2$ or $j = n-t+2$\\
+since at least one of $i$ or $j$ is incremented in each iteration, the loop terminates in at most $2(n-t+1)$ iterations.\\
+\textbf{Case 1:} $i = n-t+2$\\
+$\mathsf{L}(n-t+2, j)$: $A'[a] \neq B'[b] ~ \forall a < n-t+2, ~ b < j$\\
+note that in this case, $i$ was incremented to $n-t+2$ only when $A'[n-t+1] < B'[j] (\leq B[j+1] \leq...\leq n-t+1)$, therefore $A'[n-t+1] \neq B'[b] ~ \forall b \leq n$ (since array is sorted)\\
+$\implies A'[a] \neq B'[b] ~ \forall a \leq n-t+1, ~ b \leq n-t+1$\\
+Hence we must return NIL.\\
+\textbf{Case 2:} $j = n-t+2$\\
+$\mathsf{L}(i, n-t+2)$: $A'[a] \neq B'[b] ~ \forall a < i, ~ b < n-t+2$\\
+note that in this case, $j$ was incremented to $n-t+2$ only when $A'[i] > B'[n-t+1] (\geq B[n-t] \geq...\geq 1)$, therefore $A'[i] \neq B'[b] ~ \forall b \geq 1$ (since array is sorted)\\
+$\implies A'[a] \neq B'[b] ~ \forall a \leq n-t+1, ~ b \leq n-t+1$\\
+Hence we must return NIL.\\
+$$\mathbb{Q} \mathbb{E} \mathbb{D}$$
+\textbf{Time Complexity:} for each $t$, two calls to sort are made which are $\varTheta(n \log(n))$, subsequently $t-Asum$ is called, which is $\varTheta(n)$\\
+$t$ ranges from $1$ to $n$, hence the overall time complexity of the algorithm is $\varTheta(n^2 \log(n))$\\  
+\end{document}

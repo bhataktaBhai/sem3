@@ -1,0 +1,188 @@
+\lecture{01}{Tue 8 Aug '23}{A Warning}
+\section{The Course} \label{sec:course}
+\subsection{Instructor} \label{sec:instructor}
+Prof.~C.~Pandu Rangan. \\
+\textbf{Office hours:} CDS 406, 2 pm onwards, Wednesday.
+
+\subsection{Grading} \label{sec:grading}
+Harsh.
+Cluster-based absolute grading.
+
+Tentative weightage for the theory component:
+\begin{itemize}
+    \item \textbf{Assignments:} $30\%$.
+    \item \textbf{Midsem:} $20\%$.
+    \item \textbf{Endsem:} $50\%$.
+\end{itemize}
+
+\subsection{References} \label{sec:references}
+\begin{enumerate}
+    \item \href{https://dl.ebooksworld.ir/books/Introduction.to.Algorithms.4th.Leiserson.Stein.Rivest.Cormen.MIT.Press.9780262046305.EBooksWorld.ir.pdf}
+        {\textsl{Introduction to Algorithms}}
+        by Cormen, Leiserson, Rivest, Stein. \\
+        Good for pseudocode.
+        Read fully over multiple semesters.
+    \item \href{https://jeffe.cs.illinois.edu/teaching/algorithms/}
+        {\textsl{Algorithms}}
+        by Jeff Erickson. \\
+        Great problem sets.
+    \item \textsl{Algorithm Design} by Kleinberg and Tardos. \\
+        Chatty style.
+        Applied problems.
+\end{enumerate}
+
+\section{Analysis} \label{sec:analysis}
+% Z-Specification Language
+\begin{problem}[Binary Search] \label{prob:binary_search}
+    Given an array $A$ sorted by $\leq$ and a key $k$, return the index of $k$
+    in $A$ if it exists, else return $-1$.
+\end{problem}
+\begin{solution} \leavevmode
+    \begin{algorithm}
+        \begin{algorithmic}[1]
+            \Function{BinarySearch}{$A[0..n-1]$, $k$}
+                \State $p \gets 0$
+                \State $q \gets n - 1$
+                \While{$p \leq q$}
+                    \State $m \gets \floor{(p + q) / 2}$
+                    \If{$x < A[m]$}
+                        \State $q \gets m - 1$
+                    \ElsIf{$x > A[m]$}
+                        \State $p \gets m + 1$
+                    \Else
+                        \State \Return $m$
+                    \EndIf
+                \EndWhile
+                \State \Return $-1$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+
+    \begin{proof}
+        [Proof of partial correctness.]
+        Let $C = p \leq q$ and $I = x \in A[0..n-1] \implies x \in A[p..q]$.
+
+        $I$ is trivially true before the loop.
+        $C$ is false after the loop.
+
+        Suppose $C \land I$ is true at the beginning of the loop for some
+        instance.
+        \begin{itemize}
+            \item If $x = k$, then $p$ and $q$ are not modified, and so
+                $C \land I$ remains true.
+                The program terminates with a correct result.
+            \item If $x < A[m]$, then $x < A[m..n-1]$ since $A$ is sorted.
+                Thus if $x \in A$, then $x \in A[p..q] \setminus A[m..n-1]$ and
+                so $x \in A[p..m-1]$.
+                Thus $q \gets m-1$ preserves $I$.
+            \item If $x > A[m]$, then $x > A[0..m]$ since $A$ is sorted.
+                Thus if $x \in A$, then $x \in A[p..q] \setminus A[0..m]$ and
+                so $x \in A[m+1..q]$.
+                Thus $p \gets m+1$ preserves $I$. \qedhere
+        \end{itemize}
+    \end{proof}
+    \begin{proof}
+        [Proof of termination.]
+        Consider two cases:
+        \begin{enumerate}
+            \item[($x \in A$)] By $I$, $x \in A[p..q]$ is always true.
+                Thus $C \equiv p \leq q$ is always true.
+                Thus $q - p$ is always a non-negative integer.
+
+                Let $p_{j}, q_{j}$ be the values of $p, q$ at the beginning of
+                the $j$-th iteration.
+                For the $(j + 1)$-th iteration, we have that if $x = A[m]$, the
+                procedure terminates.
+                Otherwise,
+                \begin{align*}
+                    q_{j + 1} - p_{j + 1} &= \begin{cases}
+                        \floor{\frac{p_{j} + q_{j}}{2}} - 1 - p_{j} & x < A[m] \\
+                        q_{j} - \floor{\frac{p_{j} + q_{j}}{2}} - 1 & x > A[m]
+                    \end{cases} \\
+                        &\leq q_{j} - p_{j} - 1 \\
+                        &< q_{j} - p_{j}.
+                \end{align*}
+                Thus the procedure must terminate.
+            \item[($x \notin A$)] \qedhere
+        \end{enumerate}
+    \end{proof}
+    \begin{proof}
+        [Alternative proof of termination.]
+        Let $T = q - p + 1$.
+        $T$ is a non-negative integer that decreases in each iteration of the
+        loop.
+        Thus the loop cannot run indefinitely.
+        By $C$ we have that $p \leq q$ at the beginning of each iteration.
+        \begin{align*}
+            T_{j} &= q_{j} - p_{j} + 1 \\
+            T_{j + 1} &= q_{j + 1} - p_{j + 1} + 1 \\
+                &= \begin{cases}
+                    \floor{\frac{p_{j} + q_{j}}{2}} - p_{j} & x < A[m] \\
+                    q_{j} - \floor{\frac{p_{j} + q_{j}}{2}} & x > A[m]
+                \end{cases} \\
+                &\leq q_{j} - p_{j} \\
+                &< T_{j}. \qedhere
+        \end{align*}
+    \end{proof}
+
+    \textbf{Complexity:}
+    We have that for the worst case,
+    $T(1) = 1$ and $T(n) = 1 + T(\floor{n/2})$ for $n > 1$.
+
+    Claim: $T(n) = \log_{2}(n) + 1$.
+    \begin{proof}
+        $P(n)$ be that $T(m) = \log_{2}(m) + 1$ for all $m \leq n$.
+        Let $Q(n) = P(2^{n})$.
+
+        $Q(0)$ is trivially true.
+        // Induct.
+    \end{proof}
+\end{solution}
+
+\begin{solution}[Alternative] \leavevmode
+    \begin{algorithm}
+        \begin{algorithmic}[1]
+            \Function{BinarySearch}{$A[0..n-1]$, $k$}
+                \State $p \gets 0$
+                \State $q \gets n - 1$
+                \While{$p < q$}
+                    \State $m \gets \floor{(p + q) / 2}$
+                    \If{$x \leq A[m]$}
+                        \State $q \gets m$
+                    \Else
+                        \State $p \gets m + 1$
+                    \EndIf
+                \EndWhile
+                \If{$x = A[p]$}
+                    \State \Return $p$
+                \Else
+                    \State \Return $-1$
+                \EndIf
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+\end{solution}
+
+\begin{problem}[Buggy Binary] \label{prb:analysis:buggy_binary}
+    Prove the incorrectness of the following algorithm for binary search.
+    \begin{algorithmic}[1]
+        \Function{BinarySearch}{$A[0..n-1]$, $k$}
+            \State $p \gets 0$
+            \State $q \gets n - 1$
+            \While{$p < q$}
+                \State $m \gets \ceil{(p + q) / 2}$ \label{line:buggy:ceil}
+                \If{$x \leq A[m]$}
+                    \State $q \gets m$
+                \Else
+                    \State $p \gets m + 1$
+                \EndIf
+            \EndWhile
+            \If{$x = A[p]$}
+                \State \Return $p$
+            \Else
+                \State \Return $-1$
+            \EndIf
+        \EndFunction
+    \end{algorithmic}
+    Fix the algorithm without modifying line \ref{line:buggy:ceil}.
+\end{problem}

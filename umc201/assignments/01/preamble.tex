@@ -1,0 +1,128 @@
+\usepackage{parskip}
+\usepackage{amsmath}
+
+\usepackage{amsthm}
+\usepackage[dvipsnames]{xcolor}
+\colorlet{exercise}{red!80!black}
+\colorlet{solved}{green!30!black}
+\colorlet{self_proof}{blue!30!black}
+
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+% Gilles Castel's theorems
+\usepackage[framemethod=Tikz]{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+\mdfdefinestyle{axiomstyle}{
+    outerlinewidth = 1.5,
+    roundcorner = 10,
+    leftmargin = 15,
+    rightmargin = 15,
+    backgroundcolor = blue!10
+}
+\mdfdefinestyle{defstyle}{
+    outerlinewidth = 1.5,
+    % roundcorner = 10,
+    leftmargin = 7,
+    rightmargin = 7,
+    backgroundcolor = green!10
+}
+\mdfdefinestyle{thmstyle}{
+    outerlinewidth = 1.5,
+    roundcorner = 10,
+    leftmargin = 7,
+    rightmargin = 7,
+    backgroundcolor = yellow!10
+}
+\mdfdefinestyle{lemmastyle}{
+    outerlinewidth = 1.5,
+    roundcorner = 10,
+    leftmargin = 7,
+    rightmargin = 7,
+    backgroundcolor = yellow!10
+}
+\theoremstyle{definition}
+\newmdtheoremenv[nobreak=true, style=axiomstyle]{axiom}{Axiom}[section]
+\newmdtheoremenv[nobreak=true, style=thmstyle]{theorem}{Theorem}[section]
+\newmdtheoremenv[nobreak=true]{proposition}[theorem]{Proposition}
+\newmdtheoremenv[nobreak=true]{lemma}[theorem]{Lemma}
+\newmdtheoremenv[nobreak=true]{corollary}[theorem]{Corollary}
+\newmdtheoremenv[nobreak=true, style=defstyle]{definition}[theorem]{Definition}
+
+\newmdtheoremenv[nobreak=true]{problem}{Problem}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remarks}
+\newtheorem*{example}{Example}
+\newtheorem*{examplex}{Examples}
+\newtheorem*{solution}{Solution}
+\newtheorem*{notation}{Notation}
+
+% <cref>
+\crefname{theorem}{theorem}{theorems}
+\crefname{proposition}{proposition}{propositions}
+\crefname{lemma}{lemma}{lemmas}
+\crefname{corollary}{corollary}{corollaries}
+\crefname{axiom}{axiom}{axioms}
+\crefname{definition}{definition}{definitions}
+\crefname{problem}{problem}{problems}
+% </cref>
+
+% <hyperlinks>
+\hypersetup{colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+% </hyperlinks>
+
+\usepackage{enumitem}
+% change label for enumerate
+\setlist[enumerate]{label*=(\roman*)~,ref=(\roman*)}
+
+\newenvironment{examples}
+{\begin{examplex}\leavevmode\begin{itemize}}{\end{itemize}\end{examplex}}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs} % for \mathscr
+\usepackage{bm} % for \bm
+
+\usepackage{mathtools} % for delimiters and \coloneqq
+\DeclarePairedDelimiter{\oldparen}{(}{)}
+\DeclarePairedDelimiter{\oldbrk}{[}{]}
+\DeclarePairedDelimiter{\oldset}{\{}{\}}
+\DeclarePairedDelimiter{\oldabs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\oldnorm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\oldfloor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\oldceil}{\lceil}{\rceil}
+
+\makeatletter
+\def\paren{\@ifstar{\oldparen}{\oldparen*}}
+\def\brk{\@ifstar{\oldbrk}{\oldbrk*}}
+\def\set{\@ifstar{\oldset}{\oldset*}}
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\def\floor{\@ifstar{\oldfloor}{\oldfloor*}}
+\def\ceil{\@ifstar{\oldceil}{\oldceil*}}
+\makeatother
+
+\newcommand\N{hi}
+\renewcommand\N{\ensuremath{\mathbb{N}}}
+\newcommand\R{\ensuremath{\mathbb{F}}}
+\newcommand\Z{\ensuremath{\mathbb{Z}}}
+\renewcommand\O{\ensuremath{\varnothing}}
+\renewcommand\P{\ensuremath{\mathbb{P}}}
+\newcommand\Q{\ensuremath{\mathbb{Q}}}
+\newcommand\C{\ensuremath{\mathbb{C}}}
+
+% make \epsilon and \varepsilon the same
+\let\epsilon\varepsilon
+% fix spacing for \forall and \exists
+\let\oldforall\forall
+\renewcommand{\forall}{\oldforall \, }
+\let\oldexist\exists
+\renewcommand{\exists}{\oldexist \: }
+\newcommand\existu{\oldexist! \: }
+
+\providecommand{\dd}{\,\mathrm{d}}
+\usepackage{algorithm}
+\usepackage{algpseudocodex}

@@ -1,0 +1,104 @@
+\lecture{07}{Tue 22 Aug '23}{}
+\subsection{Principle of Inclusion \& Exclusion} \label{sec:pie}
+Let $A_1, A_2, \ldots, A_n$ be events in a probability space.
+Then \[
+    \Pr(A_1 \cup A_2 \cup \cdots \cup A_n) = \sum_{j = 1}^{n} (-1)^{j + 1} S_j
+\] where $S_j = \sum_{1 \leq i_1 < \dots < i_j \leq n} \Pr(A_{i_1} \cap \cdots \cap A_{i_j})$.
+
+\begin{proof}
+    Let $A_1, \dots, A_{n}$ be events.
+    Let $\omega \in \Omega$.
+    If $\omega \notin A_1 \cup \dots \cup A_{n}$,
+    Then $\omega$ is not counted on either the left or the right side.
+
+    If $\omega \in A_1 \cup \dots \cup A_{n}$,
+    Then $\omega$ is counted once on the left side.
+    Let $l = \size{\set{i \in [1..n] \mid \omega \in A_i}}$.
+
+    Then $p_\omega$ is counted $\binom{l}{j}$ times in $S_j$.
+    Thus $p_\omega$ is counted $\sum_{j = 1}^{n} (-1)^{j + 1} \binom{l}{j}$ times on the right side.
+    \begin{align*}
+        \sum_{j = 1}^{l} (-1)^{j + 1} \binom{l}{j}
+            &= \sum_{j = 0}^{l} (-1)^{j + 1} \binom{l}{j} + 1 \\
+            &= 1 - \sum_{j = 0}^{l} (-1)^{j} \binom{l}{j} \\
+            &= 1 \qedhere
+    \end{align*}
+\end{proof}
+
+\begin{example}
+    Prof.~Trelawny guesses a deck of $n$ cards. \[
+        \Omega = S_{n} \times S_{n}
+    \] where $S_{n}$ is the set of permutations of $n$.
+    Assuming Prof.~Trelawny is a lying bitch, \[
+        p(\pi, \sigma) = \left(\frac{1}{n!}\right)^{2}.
+    \] What is the probability that all guesses are wrong?
+    That is, $\pi(j) \neq \sigma(j)$ for all $j \in n$. \[
+        E = \set{(\pi, \sigma) \in \Omega \mid \pi(j) \neq \sigma(j)
+        \,\forall j \in n}.
+    \] We have that \[
+        E^{c} = \set{(\pi, \sigma) \in \Omega \mid \exists j \in n (
+            \pi(j) = \sigma(j))}
+    \] is a union of events \[
+        E^c_j = \set{(\pi, \sigma) \in \Omega \mid \pi(j) = \sigma(j)}.
+    \] Thus \[
+        \Pr(E^c) = S_1 - S_2 + \dots
+    \] where \begin{align*}
+        S_k &= \sum_{0 \leq i_1 < \dots < i_k < n}
+            \Pr(A_{i_1} \cap \dots \cap A_{i_k}) \\
+            &= \binom{n}{k} \cdot \frac{n! (n - k)!}{n!^2} \\
+            &= \frac{1}{k!}
+    \end{align*}
+    Thus \begin{align*}
+        \Pr(E^c) &= \frac{1}{1!} - \frac{1}{2!} + \dots - (-1)^{n} \frac{1}{n!} \\
+        \implies \Pr(E) &= 1 - \Pr(E^c) \\
+            &= \sum_{j = 0}^{n} (-1)^{j} \frac{1}{j!} \\
+            &\approx \frac{1}{e} \text{ for large } n \\
+            &\approx 0.37
+    \end{align*}
+\end{example}
+\begin{problem}
+    Show that the probability of exactly $k$ correct guesses is
+    approximately $\frac{1}{e} \frac{1}{k!}$ for small $k$ and large $n$.
+\end{problem}
+\begin{example}
+    The probability of fraudster Trelawney getting at least $10$ cards right is
+    approx \[
+        1 - \frac{1}{e} \left(1 + \frac{1}{2!} + \dots + \frac{1}{10!}\right)
+        \approx 1 - \frac{1}{e} \cdot e = 0
+    \]
+\end{example}
+\begin{problem}
+    What is the probability that Trelawney gets at least $k$ cards right?
+\end{problem}
+
+\subsection{Bonferroni's Inequalities} \label{sec:bonferroni}
+\begin{theorem}[Bonferroni's Inequalities] \label{thm:prob:bonferroni}
+    Let $A_1, \dots, A_n$ be events in a probability space.
+    Then \[
+        S_1 - S_2 \leq \Pr(A_1 \cup \dots \cup A_n) \leq S_1.
+    \] The right inequality is sometimes called the \emph{union bound}.
+\end{theorem}
+\begin{proof}
+    Let $l = \size{\set{i \in [1..n] \mid \omega \in A_i}}$.
+    Then $p_\omega$ is counted $\binom{l}{j}$ times in $S_j$.
+    Thus $\omega$ is counted $\binom{l}{1} - \binom{l}{2}$ times on the left,
+    $\ind{\Omega}$ in the middle, and $\binom{l}{1}$ times on the right.
+
+    $\binom{l}{1} - \binom{l}{2} = 1$ for $l = 1, 2$ and $\leq 0$ otherwise.
+\end{proof}
+\begin{example}
+    We throw $r$ distinguishable balls into $m$ labelled bins.
+    What is the probability that some bin is empty?
+
+    We let $\Omega = [1..m]^{r}$ with uniform probability.
+    Let $A_i$ be the event that bin $i$ is empty.
+    Then $P(A_{k}) = \frac{(m - 1)^{r}}{m^{r}}$ for all $k$.
+    $P(A_{k} \cap A_{l}) = \frac{(m - 2)^{r}}{m^{r}}$ for all $k \neq l$.
+    
+    Then from the Bonferroni inequalities,
+    \begin{equation*}
+        m \cdot \frac{(m - 1)^r}{m^r} - \binom{m}{2} \cdot \frac{(m - 2)^r}{m^r}
+            \leq \Pr(A_1 \cup \dots \cup A_m)
+            \leq m \cdot \frac{(m - 1)^r}{m^r}
+    \end{equation*}
+\end{example}

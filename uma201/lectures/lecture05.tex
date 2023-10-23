@@ -1,0 +1,110 @@
+\lecture{05}{}{}
+
+\subsection{Infinite Sums} \label{sec:infinite_sums}
+Say $\Omega = \set{\omega_1, \omega_2, \omega_3, \dots}$ is countable, and
+$f : \Omega \to \R$.
+We need to make sense of $\sum_{\omega \in \Omega} f(\omega)$.
+
+One attempt is to define
+\begin{proposition}
+    \[
+        \sum_{\omega \in \Omega} f(\omega) = \lim_{n \to \infty}
+            \sum_{j=1}^{n} f(omega_{i}).
+    \]
+\end{proposition}
+However, even if the limit exists, it may depend on the order of the terms,
+which is not what we want.
+
+In the special case of $f \geq 0$, the sequence of partial sums is increasing.
+Thus it is either bounded and converges, or is unbounded and diverges to
+$\infty$.
+
+What about reordering?
+\begin{theorem}
+    Let \[
+        \Omega = \set{\omega_{1}, \omega_{2}, \omega_{3}, \dots}
+        = \set{\omega'_{1}, \omega'_{2}, \omega'_{3}, \dots}
+    \] and $\lim_{n \to \infty} \sum_{j = 1}^{n} f(\omega_{j}) = L$,
+    $\lim_{n \to \infty} \sum_{j = 1}^{n} f(\omega'_{j}) = L'$ (possibly
+    $\infty$).
+    Then $L = L'$.
+\end{theorem}
+\begin{proof}
+    For any $n \in \N$, there exists some $n' \in \N$ such that \[
+        \set{\omega_{1}, \omega_{2}, \dots, \omega_{n}}
+        \subseteq \set{\omega'_{1}, \omega'_{2}, \dots, \omega'_{n'}}.
+    \] Thus $S_{n} \leq S'_{n'}$ and in the limit, $L \leq L'$.
+
+    Similarly, $L' \leq L$, giving $L = L'$.
+\end{proof}
+
+\begin{theorem}[Absolute Convergence] \label{thm:countable:absolute_sum}
+    If $\Omega$ is countable and $f : \Omega \to \R$, then \[
+        \lim_{n \to \infty} \sum_{j = 1}^{n} f(\omega_{j})
+    \] exists and is independent of ordering,
+    provided $\sum_{\omega \in \Omega} \abs{f(\omega)}$ is finite.
+    We say that $f$ is ``absolutely summable''.
+\end{theorem}
+\vspace{5pt} \hrule
+
+\begin{examples}
+    \item ``Pick a number at random from $[0, 1]$.''
+        This is beyond the scope of our theory at present, since $[0, 1]$ is
+        uncountable.
+    \item ``Pick a number uniformly at random from \N.''
+        This is not possible.
+\end{examples}
+\vspace{5pt} \hrule
+
+\subsection{Probability Rules} \label{sec:probability_rules}
+\begin{definition}[Indicator Function] \label{def:prob:indicator_function}
+    Let $A \subseteq \Omega$.
+    The \emph{indicator function} of $A$ is $\ind{A} : \Omega \to \set{0, 1}$ 
+    with \[
+        \ind{A}(\omega) = [\omega \in A] = \begin{cases}
+            1 & \text{if } \omega \in A, \\
+            0 & \text{if } \omega \notin A.
+        \end{cases}
+    \]
+\end{definition}
+\begin{lemma}
+    For any $A, B \subseteq \Omega$, $\ind{A \cup B} = \ind{A} + \ind{B}
+    - \ind{A \cap B}$.
+\end{lemma}
+\begin{proof}
+    Let $\omega \in \Omega$.
+    We have four cases:
+    \begin{enumerate}
+        \item ($\omega \notin A$, $\omega \notin B$) \[
+            \ind{A \cup B}(\omega) = 0 = 0 + 0 - 0 = \ind{A}(\omega)
+            + \ind{B}(\omega) - \ind{A \cap B}(\omega).
+        \]
+        \item ($\omega \notin A$, $\omega \in B$) \[
+            \ind{A \cup B}(\omega) = 1 = 0 + 1 - 0 = \ind{A}(\omega)
+            + \ind{B}(\omega) - \ind{A \cap B}(\omega).
+        \]
+        \item ($\omega \in A$, $\omega \notin B$) \[
+            \ind{A \cup B}(\omega) = 1 = 1 + 0 - 0 = \ind{A}(\omega)
+            + \ind{B}(\omega) - \ind{A \cap B}(\omega).
+        \]
+        \item ($\omega \in A$, $\omega \in B$) \[
+            \ind{A \cup B}(\omega) = 1 = 1 + 1 - 1 = \ind{A}(\omega)
+            + \ind{B}(\omega) - \ind{A \cap B}(\omega). \qedhere
+        \]
+    \end{enumerate}
+\end{proof}
+\begin{theorem}
+    For any probability space $(\Omega, p)$ and $A, B \subseteq \Omega$,
+    we have
+    \begin{enumerate}
+        \item $\Pr(\O) = 0 \leq \Pr(A) \leq 1 = \Pr(\Omega)$.
+        \item $\Pr(A^{c}) = 1 - \Pr(A)$.
+        \item If $A \cap B = \O$ then $\Pr(A \cup B) = \Pr(A) + \Pr(B)$.
+        \item $\Pr(A \cup B) = \Pr(A) + \Pr(B) - \Pr(A \cap B)$.
+    \end{enumerate} 
+\end{theorem}
+\begin{proof}
+    All probabilities must be positive as they are sums of nonnegative terms.
+    (ii), (iii), and (iv) follow from the lemma.
+    (i) follows from (ii).
+\end{proof}

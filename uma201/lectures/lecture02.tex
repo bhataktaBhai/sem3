@@ -1,5 +1,5 @@
 \lecture{02}{Thu 03 Aug '23}{}
-\begin{examplelist}
+\begin{examples}
     \item $\Omega = \set{1, 2, \dots, 6}$ with $p(\omega) = \frac{1}{6}$ for all
         $\omega \in \Omega$.
 
@@ -57,13 +57,13 @@
         memory.
     \item ``Throw $r$ balls into $m$ bins at random.''
         This situation describes several others.
-        \begin{enumerate}
+        \begin{itemize}
             \item Toss $r$ coins ($m = 2$).
             \item Roll an $m$-sided dice $r$ times.
             \item Record the birthdays of $r$ people ($m = 365$ or $366$).
             \item Study the occurence of letters in an English text.
                 Here $m = 26$ and $r$ is the number of letters in the text.
-        \end{enumerate}
+        \end{itemize}
         We propose $\Omega = \set{1, \dots, m}^{r}$.
         ``Random'' is not descriptive enough.
 
@@ -72,7 +72,7 @@
 
         An alternative is $\tilde{\Omega} =
         \set{\omega \in \set{0, \dots, r}^{m} \mid \sum \omega = r}$.
-        Note that $\abs{\tilde{\Omega}} = \binom{m + r - 1}{m - 1}$
+        Note that $\abs{\tilde{\Omega}} = \binom{m + r - 1}{m - 1}$.
         A $\tilde{p}$ corresponding to the above $p$ is complicated.
         In choosing $\Omega$, we made an implicit assumption that the $r$ balls
         are distinguishable, as are the $m$ bins.
@@ -80,4 +80,4 @@
         Suppose we have $r$ indistinguishable balls and $m$ distinguishable
         bins.
         Is $p = \omega \mapsto \frac{1}{\abs{\tilde{\Omega}}}$ reasonable?
-\end{examplelist}
+\end{examples}

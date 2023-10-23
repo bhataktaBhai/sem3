@@ -1,0 +1,1062 @@
+\documentclass[12pt]{article}
+\input{preamble}
+\usepackage{geometry}
+\geometry{a4paper, margin=1.2in}
+
+\title{Assignment 01}
+\author{Ishaq Hamza (22187) \\
+Nagasai () \\
+Naman Mishra (22223) \\\\
+Group 5}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Part 1} \label{sec:part_1}
+
+\begin{problem} \label{prb:m3sum}
+\end{problem}
+\begin{solution}
+    We propose the following algorithm.
+    We assume the \textsc{3SUM} oracle returns an ascending triple of indices
+    if it finds one, and \textsc{Nil} otherwise.
+    If not, we can sort the triple in $O(1)$ time.
+    \begin{algorithm}[H]
+        \caption{\textsc{M3SUM} from \textsc{3SUM}} \label{alg:m3sum}
+        \begin{algorithmic}[1]
+            \State \textbf{external} \textsc{3SUM}
+            \Function{M3SUM}{$A[1..n]$}
+                \State $B[1..2n] \gets \Call{Transform}{A}$
+                \State $t \gets \Call{3SUM}{B}$
+                \If{$t = \textsc{Nil}$}
+                    \State \Return \textsc{Nil}
+                \Else
+                    \State \Return $(t_1, t_2, t_3 - n)$
+                \EndIf
+            \EndFunction
+            \Statex where
+            \Function{Transform}{$A[1..n]$}
+                \State $B[1..2n]$
+                \For{$i \gets 1$ to $n$}
+                    \State $B_{i} \gets 4 A_{i} - 1$
+                    \State $B_{i + n} \gets 4 A_{i} + 2$
+                \EndFor
+                \State \Return $B$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+    Suppose \textsc{3SUM} on $B$ returns $(i, j, k)$ where $i < j < k$.
+    Note that $B_{p} \equiv -1 \pmod{4}$ iff $p \leq n$ and
+    $B_{p} \equiv 2 \pmod{4}$ iff $p > n$.
+    Since $B_{i} + B_{j} + B_{k} = 0$, we have that
+    $B_{i} + B_{j} + B_{k} \equiv 0 \pmod{4}$.
+
+    If $n < j$, then $B_{j} + B_{k} \equiv 2 + 2 \equiv 0 \pmod{4}$ and so
+    $B_{i} \equiv 0 \pmod{4}$, a contradiction.
+    
+    Thus $j \leq n$ and so $B_{i} + B_{j} \equiv -2 \pmod{4}$.
+    Thus $B_{k} \equiv 2 \pmod{4}$ and so $k > n$.
+
+    Now $B_{i} + B_{j} + B_{k} = 0$ gives
+    \begin{align*}
+        4 A_{i} - 1 + 4 A_{j} - 1 + (-4) A_{k-n} + 2 &= 0 \\
+        \implies A_{i} + A_{j} &= A_{k-n}
+    \end{align*}
+    Since $A_{p} > 0$ for all $p$, we have that $A_{i}, A_{j} < A_{k-n}$ and so
+    $i, j, k - n$ are all distinct.
+
+    On the other hand, if there exist distinct $i, j, k$ such that
+    $A_{i} + A_{j} = A_{k}$, then $B_{i} + B_{j} + B_{k + n} = 0$ and so
+    \textsc{3SUM} on $B$ returns $(i, j, k + n)$.
+    By the contrapositive, \textsc{3SUM} on $B$ fails to return a solution iff
+    there is no solution to \textsc{M3SUM} on $A$.
+
+    Thus \textsc{M3SUM} $\leq$ \textsc{3SUM}.
+\end{solution}
+
+\begin{problem} \label{prb:3collinear}
+\end{problem}
+\begin{solution}
+    We have the following algorithm.
+    \begin{algorithm}
+        \caption{\textsc{3SUM} from \textsc{ThreeCollinearPoints}} \label{alg:3collinear}
+        \begin{algorithmic}[1]
+            \State \textbf{external} \textsc{ThreeCollinearPoints}
+            \Function{3SUM}{$A[1..n]$}
+                \State \Return \Call{ThreeCollinearPoints}{\Call{Transform}{$A$}}
+            \EndFunction
+            \Statex where
+            \Function{Transform}{$A[1..n]$}
+                \State $B[1..n]$
+                \For{$i \gets 1$ to $n$}
+                    \State $B_{i} \gets (A_{i}, A_{i}^3)$
+                \EndFor
+                \State \Return $B$
+            \EndFunction
+        \end{algorithmic}
+    \end{algorithm}
+    Let $i, j, k \in [1..n]$ be distinct.
+    Since $A$ consist of distinct elements,
+    $A_{i} - A_{j}, A_{j} - A_{k}, A_{k} - A_{i}$ are all non-zero.
+    So
+    \begin{align*}
+        && A_{i} + A_{j} + A_{k} &= 0 \\
+        &\iff& (A_{j} - A_{i}) (A_{i} + A_{j} + A_{k}) &= 0 \\
+        &\iff& A_{j}^{2} - A_{i}^{2} + A_{j} A_{k} - A_{i} A_{k} &= 0 \\
+        &\iff& A_{j}^{2} + A_{j} A_{k} + A_{k}^{2} &= A_{i}^{2} + A_{i} A_{k} + A_{k}^{2} \\
+        &\iff& (A_{i} - A_{k}) (A_{j}^{3} - A_{k}^{3}) &= (A_{j} - A_{k}) (A_{i}^{3} - A_{k}^{3}) \\
+        &\iff& \begin{pmatrix}
+            A_{i} - A_{k} \\
+            A_{i}^3 - A_{k}^3
+        \end{pmatrix} \times \begin{pmatrix}
+            A_{j} - A_{k} \\
+            A_{j}^3 - A_{k}^3
+        \end{pmatrix} &= 0 \\
+        &\iff& (\vec{B}_{i} - \vec{B}_{k}) \times (\vec{B}_{j} - \vec{B}_{k}) &= 0 \\
+        &\iff& B_{i}, B_{j}, B_{k} \text{ are collinear}
+    \end{align*}
+    where $\times$ denotes the vector cross product.
+
+    Thus every solution to \textsc{3SUM} on $A$ is a solution to
+    \textsc{ThreeCollinearPoints} on $B$ with the same set of indices and vice
+    versa.
+    Thus the given algorithm is correct and \textsc{3SUM} $\leq$
+    \textsc{ThreeCollinearPoints}.
+\end{solution}
+
+\begin{problem}
+    
+\end{problem}
+\begin{notation}
+    $A[a_1,..., a_2][b_1,...,b_2]$ denotes the following subset of the array $A[m][n]$
+    $$\{A[i][j] \mid a_1 \leq i \leq a_2, j = 1,...,n\} \cup \{A[i][j] \mid b_1 \leq i \leq b_2, i = 1,...,m\}$$
+\end{notation}
+\subsection*{Part a}
+\begin{algorithm}
+    \caption{$O(n \log n)$ algorithm to search for an element in a sorted row-wise and column-wise array}
+    \begin{algorithmic}[1]
+        \Require{an $n \times n$ array $A[n][n]$ of integers which is sorted row-wise and column-wise, integer $x$}
+        \Ensure{index $(i, j)$ of the element $x$ if present or \textsc{Nil} if absent in the array}
+        \For{$i \gets 1$ to $n$}
+            \State $t \gets \Call{binarySearch}{A[i][1,...,n], x}$
+            \If{$t \neq -1$}
+                \State \Return $(i, t)$\;
+            \EndIf
+        \EndFor
+        \State \Return \textsc{Nil}
+    \end{algorithmic}
+\end{algorithm}
+Here the \textsc{binarySearch} function is the same as we discussed in class.\\
+\textbf{Proof of Correctness}\\
+\textbf{Loop Invariant:} $\mathsf{L}(i): x \notin A[1,...,i-1][1,...,n]$\\
+\textbf{Base Case:} $i = 1$\\
+$$\mathsf{L}(1): x \notin A[1,...0][1,...,n]$$
+the above holds trivially as the array $A[1,...,0][1,...,n]$ is empty.\\
+\textbf{Inductive Step:} assume that $\mathsf{L}(i)$ holds before entering the loop\\
+$$x \notin A[1,...,i-1][1,...,n]$$
+\textbf{Case 1:} $x \notin A[i][1,...,n]$\\
+    \begin{align*}
+        &\implies x \notin A[1,...,i-1][1,...,n] \cup A[i][1,...,n]\\
+        &\implies \mathsf{L}(i+1)\\
+    \end{align*}
+    $i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 2:} $x \in A[i][1,...,n]$\\
+binarySearch returns the index of $x$ in $A[i][1,...,n]$, therefore the algorithm returns the index $(i, t)$ and the loop breaks, hence $\mathsf{L}$ holds vacuously\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when $i = n+1$\\
+$\mathsf{L}(n+1)$: $x \notin A[1,...,n][1,...,n]$ (which is the complete array)\\
+$\implies x \notin A$, output should be \textsc{Nil}.
+$$\mathbb{Q} \mathbb{E} \mathbb{D} $$
+\textbf{Time Complexity:} the loop runs for $n$ iterations and each iteration performs a binary search on an array of size $n$, hence the time complexity is $O(n \log n)$\\
+\subsection*{Part b}
+\begin{algorithm}[H]
+    \caption{$O(m + n)$ algorithm to search for an element in a sorted row-wise and column-wise array}
+\begin{algorithmic}[1]
+    \Require{an $m \times n$ array $A[m][n]$ of integers which is sorted row-wise and column-wise, integer $x$}
+    \Ensure{index $(i, j)$ of the element $x$ if present or \textsc{Nil} if absent in the array}
+    $i = m$, $j = 1$\;
+    \While{$i > 0$ and $j < n+1$}
+        \If{$A[i][j] < x$}
+            \State $i--$\;
+        \ElsIf{$A[i][j] < x$}
+            \State $j++$\;
+        \Else
+            \State \Return $(i, j)$\;
+        \EndIf
+    \EndWhile
+\end{algorithmic}
+\end{algorithm}
+\textbf{Proof of Correctness}
+
+we define the loop invariant $\mathsf{L}$ as follows:\\
+$$\mathsf{L}(i, j): x \notin A[i+1,...,m][1,...,j-1]$$
+we shall prove the invariance inductively\\
+\textbf{Base Case:} $i = m, j = 1$\\
+$$\mathsf{L}(m, 1): x \notin A[m+1,...,m][1,...,0]$$
+the above statement holds trivially as in the array $A[m+1,...,m][1,..,0]$ is empty\\\\
+\textbf{Inductive Step:} assume that $\mathsf{L}(i, j)$ and the loop condition hold before entering the loop\\
+$$x \notin A[i+1,...,m][1,...,j-1]$$
+\textbf{Case 1:} $A[i][j] > x$\\
+    \begin{align*}
+        &\implies x < A[i][j] \leq A[i][j+1] \leq ... \leq A[i][n]\\
+        &\implies x \notin A[i][j,j+1...,n]\\
+    \end{align*}
+    this result when combined with the induction hypothesis yeilds
+    $$x \notin A[i+1,...,m][1,...,j-1] \cup A[i][j,j+1,...,n] ~ (= A[i,...,m][1,...,j])$$
+    $$\implies \mathsf{L}(i+1, j)$$
+    $i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 2:} $A[i][j] < x$\\
+    \begin{align*}
+        &\implies x > A[i][j] \geq A[i-1][j] \geq ... \geq A[1][j]\\
+        &\implies x \notin A[1,2,...,i-1][j]\\
+    \end{align*}
+    this result when combined with the induction hypothesis yeilds
+    $$x \notin A[i+1,...,m][1,...,j-1] \cup A[1,2,...,i-1][j] ~ (= A[1,...,i][j,...,n])$$
+    $$\implies \mathsf{L}(i, j+1)$$
+    $j \mapsto j+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 3:} if $A[i][j] = x$, then the algorithm returns the index and the loop breaks, hence $\mathsf{L}$ holds vacuously\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when either $i = 0$ or $j = n+1$\\
+\textbf{Case 1:} i = 0\\
+$\mathsf{L}(0, j)$: $x \notin A[1,...,m][1,...,j-1]$ (which is the complete array)\\
+$\implies x \notin A$, output should be \textsc{Nil}.\\
+\textbf{Case 2:} j = n+1\\
+$\mathsf{L}(i, n+1)$: $x \notin A[i+1,...,m][1,...,n]$ (which is the complete array)\\
+$\implies x \notin A$, output should be \textsc{Nil}.
+$$\mathbb{Q} \mathbb{E} \mathbb{D} $$
+\textbf{Time Complexity:} the loop runs for at most $m+n$ iterations and each iteration performs a constant number of comaprisons and updates, hence the time complexity is $O(m+n)$\\\\
+\\
+\begin{problem}
+
+\end{problem}
+first we define the following function $tAsum$
+\begin{algorithm}[H]
+    \caption{$\varTheta(n)$ algorithm to compute the array $A'$} 
+\begin{algorithmic}[1]
+    \Require{an array $A[1,...,n]$ of integers and an integer $t$ such that $1 \leq t \leq n$}
+    \Ensure{an array $A'[1,...,n-t+1]$ such that $A'[i] = A[i]+...+A[i+t-1]$}
+    \State $A'[1] = A[1]+...+A[t]$
+    \For{$i = 2$ to $n-t+1$}
+        \State $A'[i] = A'[i-1] - A[i-1] + A[i+t-1]$\;
+    \EndFor
+    \State \Return $A'$\;
+\end{algorithmic}
+\end{algorithm}
+\textbf{Proof of Correctness}\\
+\textbf{Loop Invariant:} $\mathsf{L}(i): A'[i] = A[i]+...+A[i+t-1]$\\
+\textbf{Base Case:} $i = 1$\\
+$$\mathsf{L}(1): A'[1] = A[1]+...+A[t]$$
+the above holds trivially as $A'[1] = A[1]+...+A[t]$\\
+\textbf{Inductive Step:} assume that $\mathsf{L}(i)$ holds before entering the loop\\
+$$A'[i] = A[i]+...+A[i+t-1]$$
+\begin{align*}
+    A'[i+1] &= A'[i] - A[i] + A[i+t]\\
+    &= A[i]+...+A[i+t-1] - A[i] + A[i+t]\\
+    &= A[i+1]+...+A[i+t]\\
+\end{align*}
+$i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when $i = n-t+1$\\
+this is guaranteed since $i$ is incremented by 1 in each iteration and the loop condition is $i \leq n-t+1$\\
+\textbf{Time Complexity:} the loop runs for $n-t+1$ iterations and each iteration performs a constant number of additions and subtractions, hence the time complexity is $\varTheta(n)$\\\\
+\subsection*{Part a}
+\begin{algorithm}[H]
+    \caption{$\varTheta(n^3)$ algorithm to find $t$ consecutive elements in one array whose sum is the same as the sum of $t$ consecutive elements in the other array}
+\begin{algorithmic}[1]
+    \Require{two arrays of integers $A[1,...,n]$ and $B[1,...,n]$}
+    \Ensure{$(i, j, t)$ where $A[i]+...+A[i+t-1] = B[j],...,B[j+t-1]$ if such subarrays exist, otherwise returns the special value \textsc{Nil}}
+    \For{$t = 1$ to $n$}
+        \For{$i = n$ to $n-t+1$}
+            \State $A' = tAsum(A)$
+            \State $B' = tAsum(B)$
+        \EndFor
+        \For{$i = 1$ to $n$}
+            \For{$j = 1$ to $n$}
+                \If{$A'[i] = B'[j]$}
+                    \State \Return $(i, j, t)$\;
+                \EndIf
+            \EndFor
+        \EndFor
+    \EndFor
+    \State \Return \textsc{Nil}\;
+\end{algorithmic}
+\end{algorithm}
+\textbf{Time Complexity:} in the $t^{th}$ iteration of the outermost loop, first the array is made by calling the $tAsum$ which is $\varTheta(n)$.
+\begin{align*}
+    \sum_{t=1}^{n}\varTheta(n) &= \varTheta(n^2)\\
+\end{align*}                                                                                                                                         
+the inner two loops comapre each pair of elements $(A'[i], B'[j])$ of the loops, hence the total number of comparisons is $\binom{n-t+1}{2}$.\\
+\begin{align*}
+    \sum_{t=1}^{n}\binom{n-t+1}{2} &= \sum_{t=1}^{n}\frac{(n-t+1)(n-t)}{2}\\
+    &= \frac{1}{2}\sum_{t=1}^{n}(n^2 - 2nt + t^2 - n + t)\\
+    &= \frac{1}{2}(\sum_{t=1}^{n}t^2 - (2n + 1)\sum_{t=1}^{n} + \sum{t=1}{n}n(n+1))\\
+    &= \frac{1}{2}(\frac{n(n+1)(2n+1)}{6} - (2n+1)\frac{n(n+1)}{2} + n^2(n+1))\\
+    &= \frac{(n-1)(n)(n+1)}{6}\\
+    \frac{n^3}{6} < & ~ \frac{(n-1)(n)(n+1)}{6} < \frac{n^3}{3} ~ \forall n>1\\
+\end{align*}
+hence the time complexity is $\varTheta(n^3)$
+\subsection*{Part b}
+\begin{algorithm}[H]
+\caption{$\varTheta(n^2 \log(n))$ algorithm to find $t$ consecutive elements in one array whose sum is the same as the sum of $t$ consecutive elements in the other array}
+\begin{algorithmic}[1]
+    \Require{two arrays of integers $A[1,...,n]$ and $B[1,...,n]$}
+    \Ensure{$(i, j, t)$ where $A[i]+...+A[i+t-1] = B[j],...,B[j+t-1]$ if such subarrays exist, otherwise returns the special value \textsc{Nil}}
+    \For{$t = 1$ to $n$}
+        \State $A' = tAsum(A)$
+        \State $B' = tAsum(B)$
+        \State $sA'$ = sort($A'$)\;
+        \State $sB'$ = sort($B'$)\;
+        \State i = 1, j = 1\;
+        \While{$i \leq n-t$ and $j \leq n-t$}
+            \If{$sA'[i] > sB'[j]$}
+                \State $j++$\;
+            \ElsIf{$sA'[i] < sB'[j]$}
+                \State $i++$\;
+            \Else
+                \State \Return $(i, j, t)$\;
+            \EndIf
+        \EndWhile
+    \EndFor
+    \State \Return \textsc{Nil}\;
+\end{algorithmic}
+\end{algorithm}
+Here, the sort function is assumed to work in $\varTheta(n \log n)$ time.\\
+\textbf{Proof of Correctness}\\
+we define the loop invariant $\mathsf{L}$ as follows:\\
+$$\mathsf{L}(i, j): A'[a] \neq B'[b] ~ \forall a < i, ~ b < j$$
+we shall prove the invariance inductively\\
+\textbf{Base Case:} $i = 1, j = 1$\\
+$$\mathsf{L}(1, 1): A'[a] \neq B'[b] ~ \forall a < 1, ~ b < 1$$
+the above statement holds trivially as the array $A'[a] \neq B'[b] ~ \forall a < 1, ~ b < 1$ is empty\\\\
+\textbf{Maintenance:} assume that $\mathsf{L}(i, j)$ and the loop condition hold before entering the loop\\
+$$A'[a] \neq B'[b] ~ \forall a < i, ~ b < j$$
+\textbf{Case 1:} $A'[i] > B'[j]$\\
+    $$A'[a] \neq B'[b] ~ \forall a < i, ~ b < j+1$$
+    $$\implies \mathsf{L}(i, j+1)$$
+    $j \mapsto j+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 2:} $A'[i] < B'[j]$\\
+    $$A'[a] \neq B'[b] ~ \forall a < i, ~ b < j+1$$
+    $$\implies \mathsf{L}(i+1, j)$$
+    $i \mapsto i+1$, therefore $L$ holds after the iteration of the loop\\
+\textbf{Case 3:} if $A'[i] = B'[j]$, then the algorithm returns the index and the loop breaks, hence $\mathsf{L}$ holds vacuously\\
+\\
+Therefore the loop invariant holds inductively.\\
+\\
+\textbf{Termination:} the loop terminates when either $i = n-t+2$ or $j = n-t+2$\\
+since at least one of $i$ or $j$ is incremented in each iteration, the loop terminates in at most $2(n-t+1)$ iterations.\\
+\textbf{Case 1:} $i = n-t+2$\\
+$\mathsf{L}(n-t+2, j)$: $A'[a] \neq B'[b] ~ \forall a < n-t+2, ~ b < j$\\
+note that in this case, $i$ was incremented to $n-t+2$ only when $A'[n-t+1] < B'[j] (\leq B[j+1] \leq...\leq n-t+1)$, therefore $A'[n-t+1] \neq B'[b] ~ \forall b \leq n$ (since array is sorted)\\
+$\implies A'[a] \neq B'[b] ~ \forall a \leq n-t+1, ~ b \leq n-t+1$\\
+Hence we must return \textsc{Nil}.\\
+\textbf{Case 2:} $j = n-t+2$\\
+$\mathsf{L}(i, n-t+2)$: $A'[a] \neq B'[b] ~ \forall a < i, ~ b < n-t+2$\\
+note that in this case, $j$ was incremented to $n-t+2$ only when $A'[i] > B'[n-t+1] (\geq B[n-t] \geq...\geq 1)$, therefore $A'[i] \neq B'[b] ~ \forall b \geq 1$ (since array is sorted)\\
+$\implies A'[a] \neq B'[b] ~ \forall a \leq n-t+1, ~ b \leq n-t+1$\\
+Hence we must return \textsc{Nil}.\\
+$$\mathbb{Q} \mathbb{E} \mathbb{D}$$
+\textbf{Time Complexity:} for each $t$, two calls to sort are made which are $\varTheta(n \log(n))$, subsequently $tAsum$ is called, which is $\varTheta(n)$\\
+$t$ ranges from $1$ to $n$, hence the overall time complexity of the algorithm is $\varTheta(n^2 \log(n))$\\  
+\section{Part 2} \label{sec:part_2}
+\begin{problem}
+    
+\end{problem}
+Pingala and Peasant power algorithms are the two algorithms given in the the book. They are written as recursive algorithms. We can capture the idea used in these algorithm to design a iterative algorithm to achieve the same result. The idea is to use the binary representation of the exponent to compute the result. We know that any number can be expressed as a sum of powers of 2. So, we can express the exponent as a sum of powers of 2. Then, we can use the fact that $a^{2^i} = (a^{2^{i-1}})^2$ to compute the result. The pseudo code for the above algorithm is given below.
+\subsection*{Pseudo Code for Peasant Exponentiation}
+\begin{algorithm}[H]
+    \caption{Iterative code for Peasant exponentiation}
+    \begin{algorithmic}[1]
+        \Function {PeasantExponentiation}{$a, n$}
+        \If{$n = 0$}
+            \State \Return $1$
+        \EndIf
+        \State $exponent \gets n$
+        \State $iteration \gets 0$
+        \State $base \gets a$
+        \If{$exponent \% 2 = 1$}
+            \State $result \gets base$
+        \Else
+            \State $result \gets 1$
+        \EndIf
+        \State $exponent = \lfloor \frac{exponent}{2} \rfloor$
+        \While{$exponent > 0$}
+            \State $iteration \gets iteration + 1$
+            \State $base \gets base \times base$
+            \If{$exponent \% 2 = 1$}
+                \State $result \gets result \times base$
+            \EndIf
+            \State $exponent = \lfloor \frac{exponent}{2} \rfloor$
+        \EndWhile
+        \State \Return $result$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\subsubsection*{Observations}
+\begin{enumerate}
+    \item $iteration$ is the number of iterations of the while loop.
+    \item $base$ is the value of $a^{2^i}$ at the beginning of the $i^{th}$ iteration of the while loop. As at the begining $base$ is $a$, and it keeps getting squared. So, $base = a^{2^i}$ at the beginning of the $i^{th}$ iteration.
+    \item $exponent$ is the value of $n$ at the beginning of the $i^{th}$ iteration of the while loop. Moreover, the expression $exponent\%2$ at the $i^{th}$ iteration is equal to $i^{th}$ bit from right in binary representation of $n$ (This is because, remainders obtained by repeated division of 2 gives the binary representation of the number).
+\end{enumerate}
+
+\subsection*{Loop Invariant}
+First, let's express $n$ in binary form as,
+$$n = 2^0\lambda_0 + 2^1\lambda_1 + \ldots + 2^k\lambda_k$$
+where each $\lambda_i \in \{0,1\}$. Then loop invariant is $result = a^{2^0\lambda_0 + \ldots 2^{iteration}\lambda_{iteration}}$ after $iteration^{th}$ iteration of the while loop.
+
+\subsubsection*{Initialization}
+Initially, $iteration = 0$. If $exponent\%2 = 1$, implies $\lambda_0 = 1$, otherwise $\lambda_0 = 0$. We updated the value of result accordingly. In each case, $result = a^{2^0\lambda_0}$. Hence, loop invariant is true.
+
+\subsubsection*{Maintenance}
+Assume the loop invariant is true for some iteration. We need to prove that loop invariant is true for the next iteration. Suppose, the loop invariant is true for $i^{th}$ iteration i.e $$result = a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}}$$
+In the next iteration, $iteration$ is incremented by one. So, $iteration = i + 1$. Also, $base$ is squared. So, $base = a^{2^{i+1}}$. Also, $exponent$ is divided by 2. So, $exponent = \lfloor \frac{n}{2^{i+1}} \rfloor$. Now, we consider the two cases. If $exponent\%2 = 0$, then $\lambda_{i+1} = 0$. So,
+\begin{align*}
+    result &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \\ 
+            &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \times 1 \\ 
+            &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \times a^{2^{i+1} \lambda_{i+1}} \\
+            &= a^{2^0\lambda_0 + \ldots 2^{i+1}\lambda_{i+1}}
+\end{align*}
+So, loop invariant is still true. If $exponent\%2 = 1$, then $\lambda_{i+1} = 1$. In this case, we are multiplying $result$ by $base$. So, new $result$ will be
+\begin{align*}
+    result &= a^{2^0\lambda_0 + \ldots 2^{i}\lambda_{i}} \times a^{2^{i+1}} \\
+        &= a^{2^0\lambda_0 + \ldots 2^{i+1}\lambda_{i+1}}
+\end{align*}
+So, loop invariant is still true. Hence, in all logical flows, loop invariant is true for the next iteration.
+
+\subsubsection*{Termination}
+As $exponent$ is a finite number, if we keep doing floor division, it will eventually reach $0$ because any strictly decreasing sequence of Natural numbers must terminate at some point. More precisely, the loop will terminate just after $iteration = k$. At this point, $exponent = 0$ so the loop terminates. So, $result = a^{2^0\lambda_0 + \ldots 2^{k}\lambda_{k}}$ (due to loop invariant). So, $result = a^n$. Hence, the algorithm is correct.
+
+\subsubsection*{Complexity analysis}
+As noted earlier, the maximum value of $iteration$ is $k$. Therefore, the loop can run atmost $k$ times. In each iteration, we are doing a constant amount of work (addition, multiplication, modulo operation, comparisons all take $O(1)$ amount of work). So, the total work done is $O(k)$. Now, we need to find the value of $k$. We know that $n = 2^0\lambda_0 + 2^1\lambda_1 + \ldots + 2^k\lambda_k$. So, $k = \lfloor \log_2 n \rfloor$. So, the total work done is $O(\log n)$. Therefore, the algorithm runs in $O(\log n)$.
+
+\subsection*{Pseudo Code for Pingala Exponentiation}
+\begin{algorithm}[H]
+    \caption{Iterative code for Pingala exponentiation}
+    \begin{algorithmic}[1]
+        \Function{PingalaExponentiation}{$a, n$}
+            \State $N \gets n$
+            \If{$N = 0$}
+                \State \Return $1$
+            \EndIf
+            \State $result \gets 1$
+            \State $mask \gets \Call{GreaterPower2}{N}$
+            \While{$mask > 1$}
+                \State $result \gets result \times result$
+                \State $mask \gets mask \gg 1$
+                \If{$N \odot mask \neq 0$}
+                    \State $result \gets result \times a$
+                    \State $N \gets N \oplus mask$
+                \EndIf
+            \EndWhile
+            \State \Return $result$
+        \EndFunction
+        \Function{GreaterPower2}{$n$}
+            \State $result \gets 1$
+            \Repeat
+                \State $result \gets result \ll 1$
+            \Until{$result > n$}
+            \State \Return $result$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+Here, $\odot$ is the bitwise AND operator, $\oplus$ is the bitwise XOR operator and $\ll, \gg$ are the left and right shift operators respectively.
+
+This pseudo code is very similar to the previous one.
+% The only difference is that we are not using the binary representation of the exponent.
+We are still using the binary representation of the exponent, through
+the variable $mask$.
+We verified that the algorithm is mimicing the recursive algorithm.
+
+\subsubsection*{Termination} \label{sec:termination}
+The loop in \textsc{GreaterPower2} terminates in less than $\log_{2}(n) + 2$
+iterations, since $result$ is doubled in each iteration.
+
+The loop in \textsc{PingalaExponentiation} terminates when $mask \leq 1$.
+This must always happen in a finite number of iterations,
+since $x \gg 1 < x$ for all $x > 0$.
+Thus, $mask$ is a strictly decreasing sequence of positive integers,
+and must eventually fall below $2$.
+
+\subsubsection*{Correctness} \label{sec:correctness}
+The helper function \textsc{GreaterPower2} returns the lowest power of $2$
+greater than $n$.
+This is correct by the loop invariant \[
+    result \text{ is a power of two}
+\] and the loop condition $result \leq n$.
+
+For correctness of \textsc{PingalaExponentiation},
+let $I$ be the proposition \[
+    a^{n} = result^{mask} \cdot a^{N} \text{ and } mask \text{ is a power of } 2
+        \text{ and } 0 \leq N < mask.
+\] This is trivially true before the first iteration, as $N = n$ and $result = 1$,
+and $mask$ is the lowest power of $2$ greater than $n$.
+
+Suppose $I$ is true before the $k$-th iteration.
+We consider two cases, where $mask' = mask \gg 1$ as updated on line 9.
+Note that $mask'$ is a power of $2$, since $mask$ is a power of $2$
+greater than $1$ (by the loop condition).
+\begin{itemize}
+    \item \textbf{Case 1:} $N \odot mask' = 0$.
+        We have $result' = result^{2}$ (line 8) and $N' = N$.
+        Thus,
+        \begin{align*}
+            (result')^{mask'} \cdot a^{N'} &= (result^{2})^{mask / 2} \cdot a^{N} \\
+            &= result^{mask} \cdot a^{N} \\
+            &= a^{n}. \tag{by induction hypothesis}
+        \end{align*}
+        Also, since $N \geq 0$, we have $N' = N \geq 0$.
+        Finally, since $N' \odot mask' = 0$ and $N' < 2 mask'$, we have that
+        $N' + mask' < mask' \ll 1 = 2 mask'$ and so $N' < mask'$.
+    \item \textbf{Case 2:} $N \odot mask \neq 0$.
+        We have $result' = result^{2} \cdot a$ (line 8, 11)
+        and $N' = N \oplus mask'$ (line 12).
+
+        Also note that $N \odot mask' \neq 0$ implies $N \oplus mask' = N - mask'$.
+        This is because $mask'$ is a power of $2$, so it has only one bit set.
+        Thus $N \odot mask' \neq 0 \implies N \odot mask' = mask'$ and so
+        $N \oplus mask' = N - mask'$.
+        Thus,
+        \begin{align*}
+            (result')^{mask'} \cdot a^{N'} &= (result^{2})^{mask / 2} \cdot a^{mask'} \cdot a^{N \oplus mask'} \\
+            &= result^{mask} \cdot a^{mask' + N \oplus mask'} \\
+            &= result^{mask} a^{mask' + N - mask'} \\
+            &= result^{mask} \cdot a^{N} \\
+            &= a^{n}. \tag{by induction hypothesis}
+        \end{align*}
+        Also, since $N, mask \geq 0$, we have $N' = N \oplus mask' \geq 0$.
+        Finally, $N' = N - mask' < mask - mask'$ (induction hypothesis)
+        $= 2 mask' - mask' = mask'$.
+\end{itemize}
+Thus, $I$ is true after the $k$-th and before the $(k+1)$-th iteration.
+By induction, $I$ is true after the last iteration.
+
+Outside the loop (line 13), we have $mask \leq 1$ by the loop condition,
+and that $mask$ is a power of $2$ by the loop invariant.
+Thus $mask = 1$.
+
+Moreover, we have $0 \leq N < mask = 1$ by the loop invariant, so $N = 0$.
+Thus by the loop invariant, $a^{n} = result^{mask} \cdot a^{N} = result^{1} \cdot a^{0} = result$.
+Thus the function returns the correct value at line 13.
+
+% But, we failed to come up with any loop invariant that would prove the correctness of the algorithm.
+% So, we are not including the proof of correctness here.
+% But, we will do the complexity analysis.
+
+\subsubsection*{Complexity Analysis}
+In \textsc{GreaterPower2}, the loop runs at most $\floor{\log_2 n} + 1$ times.
+Each bitwise shift costs $O(1)$ time (at least relative to multiplication), so
+\textsc{GreaterPower2} runs in $O(\log n)$ time.
+
+In \textsc{PingalaExponentiation}, in each while loop, we are doing a constant amount of work,
+since all bitwise operations take constant time.
+The while loop can run at maximum $\lfloor \log_2 n \rfloor$ times as running further would imply that $mask$ variable is halved each time.
+So, the total work done is $O(\log n)$.
+Therefore, the algorithm runs in $O(\log n)$.
+
+\begin{problem}
+    
+\end{problem}
+We are given with three sorted arrays $A[1\ldots p], B[1\ldots q], C[1\ldots r]$. We are given that there is atleast one common element in all the three arrays. We need to find a common element in all the three arrays. We can solve this problem in $O(n)$ time. This solution is inspired from the "TWO SUM" problem, where we use two pointers to tranverse the array. Instead of two pointers, pointing to same array, here we use three pointers, each one pointing to different array. We start with the first element of each array. We compare the three elements. If they are equal, we return the element. If they are not equal, we increment the pointer pointing to the smallest element. We repeat this process until we find the common element. The pseudo code for the above algorithm is given below.
+
+\begin{algorithm}[H]
+\caption{Common Element in Three Sorted Arrays}
+\begin{algorithmic}[1]
+\Function{CommonElement}{$A[ ], B[ ], C[ ], p, q, r$}
+    \State $first \gets 0$
+    \State $second \gets 0$
+    \State $third \gets 0$
+    \While{$first < p$ and $second < q$ and $third < r$}
+        \State $maximal \gets max(A[first], B[second], C[third])$
+        \If{$A[first] = B[second] = C[third]$}
+            \State \Return $(first, second, third)$
+        \EndIf
+        \If{$A[first] < maximal$ }
+            \State $first \gets first + 1$
+        \EndIf
+        \If{$B[second] < maximal$}
+            \State $second \gets second + 1$
+        \EndIf
+        \If{$C[third] < maximal$}
+            \State $third \gets third + 1$
+        \EndIf
+    \EndWhile
+    \State \Return "No common element found"
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection*{Loop Invariant}
+Let $x$ be the first common element present in all three elements (such an element $x$ is guaranteed by the question itself). Let us also denote $I_D(y)$ as the index of first occurenece of $y$ in the array $D$. Notice that $ I_A(x) < p \; and \; I_B(x) < q \; and \; I_C(x) < r$. Loop Invariant is $$first \leq I_A(x) \quad second \leq I_B(x) \quad third \leq I_C(x) $$ 
+
+\subsubsection*{Initialization}
+Initially, $ \; first = second = third = 0$. So, $I_A(x), I_B(x), I_C(x) \geq 0 = first = second = third$. Hence, loop Invariant is true
+
+\subsubsection*{Maintenance}
+Let us assume that the loop invariant is true for some iteration. We need to prove that the loop invariant is true for the next iteration. if $A[first], B[second], C[third]$ are all equal to each other. Then loop terminates. So, we won't deal with that here. Suppose, that they all are not equal. Then there must be a maximal element among them. WLOG, let $C[third]$ be the maximal element. If $A[first] < C[third]$, we are incrementing the left pointer by one. As $A[first] < C[third]$ and $C[third] \leq x$ (assumption that loop Invariant was true in the beginning of loop), we have $A[first] < x$. 
+This implies, $first < I_A(x)$. So, $first + 1 \leq I_A(x)$. So, incrementing first by one, doesn't effect the loop invariant. Hence, loop Invariant is true for the next iteration. Similarly, we can prove for the case if $B[second] < C[third]$ that loop Invariant is true for the next iteration.
+
+\subsubsection*{Termination}
+First, we will show that loop must terminate at some point. Then, we will show that at the point of termination, our desired outcome is reached.
+In each iteration, atleast one of the pointers is incremented. If the function never returns, the pointers keep on going right till they exceed the size of the array. So, the while condition will be violated (if it doesn't return by then). Hence, loop will terminate. 
+
+Now, I will show that loop will only terminate, when the required condition is satisfied i.e $$A[first] = B[second] = C[third] = x$$
+For the sake of contradiction, assume that loop terminates without satisfying the above condition. Then, it means that loop got terminated due to violation of while loop condition. This means that atleast one of the pointers has exceeded the size of the array. WLOG, let $first$ exceed the size of the array. Then, $first \geq p$. This implies, $I_A(x) \geq first \geq p$ (as loop invariant must maintained through out). This is contradiction to the fact that $I_A(x) < p$. Hence, loop will terminate only when the required condition is satisfied.
+
+\subsection*{Complexity Analysis}
+Notice that in each iteration, we are incrementing atleast one of the pointers and each of them can't exceed their respective array lengths. So, the loop will run atmost $p + q + r$ times. In each iteration, we are doing a constant amount of work (comparisons, addition, incrementing pointers all take $O(1)$ amount of work). So, the total work done is $O(p + q + r)$. Therefore, the algorithm runs in $O(p + q + r)$.
+
+
+\begin{problem}
+    
+\end{problem}
+\begin{solution} \leavevmode
+    We assume that the arrays are sorted in ascending order.
+    \begin{enumerate}[wide]
+        \item \textbf{min} $\bm{W1}$.
+            \begin{algorithm}[H]
+                \caption{Minimum of $W_1$}
+                \begin{algorithmic}[1]
+                    \State \textbf{external} \textsc{Sort(list, key)}
+                    \Function {MinW1}{$A[1..n], B[1..n], C[1..n]$}
+                        \State $(A, B, C) \gets \Call{Sort}{[A, B, C], \text{key}=X \mapsto X_{n}}$
+                        \State $p = q = r = n$
+                        \State $(a, b, c) \gets (A_{p}, B_{q}, C_{r})$
+                        \State $w \gets \infty$
+                        \While{$r > 1$}
+                            \State $w \gets \min(w, \max(\abs{a - b}, \abs{b - c}, \abs{c - a}))$
+                            \State $r \gets r - 1$
+                            \State $((A, p), (B, q), (C, r)) \gets$
+                            \Statex \quad $\Call{Sort}{[(A, p), (B, q), (C, r)], \text{key}=(X, i) \mapsto X_{i}}$
+                            \State $(a, b, c) \gets (A_{p}, B_{q}, C_{r})$
+                        \EndWhile
+                        \State $w \gets \min(w, \max(\abs{a - b}, \abs{b - c}, \abs{c - a}))$
+                        \State \Return $w$
+                    \EndFunction
+                \end{algorithmic}
+            \end{algorithm}
+            where \textsc{Sort} sorts a list of three elements in ascending
+            order according to a key.
+            An implementation for three elements is trivial.
+            \begin{proof}[Proof of termination]
+                The loop terminates when $r = 1$.
+                In each loop, $r$ is decremented by $1$, and then $p, q, r$ are
+                permuted so that $A_{p}, B_{q}, C_{r}$ are the largest elements.
+                Thus $p + q + r$ decreases by $1$ in each loop.
+                Since $p + q + r$ is initially $3n$, the loop terminates after
+                an at most $3n - 2$ iterations.
+            \end{proof}
+            \begin{proof}[Proof of runtime]
+                Assignments, min, max and \textsc{Sort} are $O(1)$ (\textsc{Sort}
+                takes only $3$ elements as input each time).
+                The loop terminates in at most $3n - 2$ iterations.
+                Thus the runtime of \textsc{MinW1} is $O(n)$.
+            \end{proof}
+            \begin{proof}[Proof of correctness]
+                Let $I = P_1 \land P_2 \land r \geq 1$ where $P_1$ is the proposition that \[
+                    a = A_{p} \land b = B_{q} \land c = C_{r} \land a \leq b \leq c
+                \] and $P_2$ is the proposition that
+                \begin{align*}
+                    \forall i, j, k \in [1..n] (&i > p \lor j > q \lor k > r \\
+                                        &\implies w \leq \max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})).
+                \end{align*}
+                Before the loop, $p = q = r = n$ and $a = A_{n}, b = B_{n}, c = C_{n}$,
+                where $A, B, C$ are already taken such that $A_{n} \leq B_{n} \leq C_{n}$
+                (in line $3$).
+                Thus $P_1$ is true.
+                Moreover, $P_2$ is vacuously true.
+                
+                Suppose $I$ is true before the $k$-th iteration of the loop.
+                We have on line 9 that $r' = r - 1$, $c' = C[r - 1]$ and
+                $w' = \min(w, \max(\abs{a - b}, \abs{b - c}, \abs{c - a}))$.
+                % Since $a$, $b$, $c$, $p$, $q$ are unchanged and $c' = C[r']$,
+                % we have that $P_1$ is true.
+
+                Note that since $a \leq b \leq c$, we have that
+                \begin{align*}
+                    \max(\abs{a - b}, \abs{b - c}, \abs{c - a})
+                        &= \max(b - a, c - b, c - a) \\
+                        &= c - a
+                \end{align*}
+                and so $w' = \min(w, c - a)$.
+
+                Let $i, j, k \in [1..n]$ such that $i > p \lor j > q \lor k > r'$.
+                If $i > p$ or $j > q$, then
+                $w' \leq w \leq \max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})$
+                by the induction hypothesis.
+
+                Otherwise, $i \leq p$, $j \leq q$ and $k > r' = r - 1$.
+                If $k > r$, then again
+                $w' \leq w \leq \max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})$
+                by the induction hypothesis.
+                Otherwise, $k = r$.
+                Since $C_{r} \geq A_{p} \geq A_{i}$ and $C_{r} \geq B_{q} \geq B_{j}$,
+                \begin{align*}
+                    \max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})
+                        &\geq \max(C_{r} - B_{j}, C_{r} - A_{i}) \\
+                        &\geq \max(C_{r} - B_{q}, C_{r} - A_{i}) \\
+                        &\geq \max(C_{r} - B_{q}, C_{r} - A_{p}) \\
+                        &= \max(c - b, c - a) \\
+                        &= c - a \\
+                        &\geq w'
+                \end{align*}
+                Thus $P_2$ is true.
+
+                Line 9 leaves $A, B, C$ and $p, q, r$, all the free variables of $P_2$
+                unchanged.
+                Thus $P_2$ is still true after line 9.
+
+                Line 10 permutes $(A, p), (B, q), (C, r)$ such that $A_{p} \leq B_{q} \leq C_{r}$.
+                Since it is only a permutation of terms that $P_2$ is symmetric in,
+                $P_2$ is still true after the permutation.
+
+                Line 11 leaves $A, B, C$ and $p, q, r$ unchanged.
+                Thus $P_2$ is still true after the $k$-th iteration.
+
+                Moreover, line 11 ensures that $a = A_{p}$, $b = B_{q}$, $c = C_{r}$,
+                with $a \leq b \leq c$ (due to the sorting on line 10),
+                and so $P_1$ is true after the $k$-th iteration.
+                
+                Lastly, since $r' = r - 1$, the loop condition $r > 1$ ensures
+                that $r' \geq 1$.
+
+                Thus $I$ is true after the $k$-th iteration and before the
+                $(k + 1)$-th iteration.
+                Thus by induction, $I$ is true after the loop terminates.
+
+                Now consider line 12.
+                $w' = \min(w, \max(\abs{a - b}, \abs{b - c}, \abs{c - a}))$.
+                The loop condition $r > 1$ is false, so $r \leq 1$.
+                By the loop invariant, $r \geq 1$ and so $r = 1$.
+                
+                Let $i, j, k \in [1..n]$.
+                We have by the loop invariant that if $i > p$ or $j > q$ or
+                $k > 1$ then
+                $w' \leq w \leq \max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})$.
+
+                Otherwise, $i \leq p$ and $j \leq q$ and $k = 1$.
+                Since $C_{1} \geq A_{p} \geq A_{i}$ and $C_{1} \geq B_{q} \geq B_{j}$,
+                \begin{align*}
+                    \max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})
+                        &\geq \max(C_{1} - B_{j}, C_{1} - A_{i}) \\
+                        &\geq \max(C_{1} - B_{q}, C_{1} - A_{i}) \\
+                        &\geq \max(C_{1} - B_{q}, C_{1} - A_{p}) \\
+                        &= \max(c - b, c - a) \\
+                        &= c - a \\
+                        &\geq w'
+                \end{align*}
+                
+                Thus, we have for any $i, j, k \in [1..n]$ that \[
+                    w' \leq \max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}).
+                \] Since $w$ is always assigned a value of the form
+                $\max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})$,
+                we have that \[
+                    w' = \min\set{\max(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}) \mid i, j, k \in [1..n]}.
+                \] Thus the value returned by the function on line 13 is correct.
+            \end{proof}
+        \item \textbf{max} $\bm{W1}$.
+            \begin{algorithm}[H]
+                \caption{Maximum of $W_1$}
+                \begin{algorithmic}[1]
+                    \Function{MaxW1}{$A[1..n]$, $B[1..n]$, $C[1..n]$}
+                        \State \Return $\max\set{\Call{MaxPair}{A, B}, \Call{MaxPair}{B, C}, \Call{MaxPair}{C, A}}$
+                    \EndFunction
+                    \Function{MaxPair}{$X[1..n]$, $Y[1..n]$}
+                        \State \Return $\max\set{\abs{X_{n} - Y_{1}}, \abs{Y_{n} - X_{1}}}$
+                    \EndFunction
+                \end{algorithmic}
+            \end{algorithm}
+            \begin{proof}[Proof of correctness]
+                We first prove the correctness of \textsc{MaxPair}, that is, \[
+                    \forall i, j \in [1..n], \abs{X_{i} - Y_{j}} \leq \Call{MaxPair}{X, Y}.
+                \] Let $i, j \in [1..n]$ be arbitrary.
+                We have two cases.
+                \begin{itemize}
+                    \item \textbf{Case 1:} $X_{i} < Y_{j}$. \\
+                        Then $Y_{n} - X_{1} \geq Y_{j} - X_{1} \geq Y_{j} - X_{i} > 0$. \\
+                        So $\abs{X_{i} - Y_{j}} \leq \abs{Y_{n} - X_{1}} \leq \Call{MaxPair}{X, Y}$.
+                    \item \textbf{Case 2:} $X_{i} \geq Y_{j}$. \\
+                        Then $X_{n} - Y_{1} \geq X_{i} - Y_{1} \geq X_{i} - Y_{j} \geq 0$. \\
+                        So $\abs{X_{i} - Y_{j}} \leq \abs{X_{n} - Y_{1}} \leq \Call{MaxPair}{X, Y}$.
+                \end{itemize}
+                Thus, $\abs{X_{i} - Y_{j}} \leq \Call{MaxPair}{X, Y}$ for all $i, j \in [1..n]$.
+
+                We now prove that the function \textsc{MaxW1} returns the correct value.
+                Let $i, j, k \in [1..n]$.
+                Then
+                \begin{align*}
+                    \Call{W1}{i, j, k} &= \max\set{\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \max\set{\max\set{\abs{a - b} \mid a \in A, b \in B}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \max\set{\max\set{\abs{a - b} \mid a \in A, b \in B}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &= \max\set{\Call{MaxPair}{A, B}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \max\set{\Call{MaxPair}{A, B}, \Call{MaxPair}{B, C}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \max\set{\Call{MaxPair}{A, B}, \Call{MaxPair}{B, C}, \Call{MaxPair}{C, A}} \\
+                                       &= M.
+                \end{align*}
+                Since $\Call{MaxPair}{X, Y} = \abs{x - y}$ for some $x \in X, y \in Y$,
+                we have that $M$ is of the form $\abs{a - b}$ or $\abs{b - c}$ or $\abs{c - a}$
+                for some $a \in A, b \in B, c \in C$.
+
+                Thus, $M = \max\Call{W1}{i, j, k}$ and so the function returns
+                the correct value.
+            \end{proof}
+            \begin{proof}[Proof of termination/runtime]
+                The runtime of \textsc{MaxPair} is $O(1)$.
+                Thus the runtime of \textsc{MaxW1} is $O(1)$.
+            \end{proof}
+        \item \textbf{min} $\bm{W2}$.
+            % \begin{algorithm}[H]
+            %     \begin{algorithmic}[1]
+            %         \Function{MinW2}{$A[1..n]$, $B[1..n]$, $C[1..n]$}
+            %             \Function{W2}{$i$, $j$, $k$}
+            %                 \State \Return $\min\set{\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}}$
+            %             \EndFunction
+            %             \State $(i, j, k) \gets (1, 1, 1)$
+            %             \State $m \gets \Call{W2}{i, j, k}$
+            %             \While{$i < n$ and $j < n$ and $k < n$}
+            %                 \State $(i, j, k) \gets \begin{cases}
+            %                     (i + 1, j, k) & \text{if } A_{i} \leq B_{j} \text{ and } A_{i} \leq C_{k} \\
+            %                     (i, j + 1, k) & \text{if } B_{j} < A_{i} \text{ and } B_{j} \leq C_{k} \\
+            %                     (i, j, k + 1) & \text{if } C_{k} < A_{i} \text{ and } C_{k} < B_{j}
+            %                 \end{cases}$
+            %                 \State $m \gets \min\set{m, \Call{W2}{i, j, k}}$
+            %             \EndWhile
+            %             \State \Return $m$
+            %         \EndFunction
+            %     \end{algorithmic}
+            % \end{algorithm}
+            \begin{algorithm}[H]
+                \caption{Minimum of $W_2$}
+                \begin{algorithmic}[1]
+                    \Function{MinW2}{$A[1..n]$, $B[1..n]$, $C[1..n]$}
+                        \State $M \gets \min\set{\Call{MinPair}{A, B},
+                            \Call{MinPair}{B, C}, \Call{MinPair}{C, A}}$
+                        \State \Return $M$
+                    \EndFunction
+                    \Function{MinPair}{$X[1..n]$, $Y[1..n]$}
+                        \State $(i, j) \gets (1, 1)$
+                        \State $m \gets \abs{X_{i} - Y_{j}}$
+                        \While{$i \leq n$ and $j \leq n$}
+                            \State $(i, j) \gets \begin{cases}
+                                (i + 1, j) & \text{if } X_{i} \leq Y_{j} \\
+                                (i, j + 1) & \text{if } Y_{j} < X_{i}
+                            \end{cases}$
+                            \State $m \gets \min\set{m, \abs{X_{i} - Y_{j}}}$
+                        \EndWhile
+                        \State \Return $m$
+                    \EndFunction
+                \end{algorithmic}
+            \end{algorithm}
+            \begin{proof}[Proof of termination]
+                \textsc{MinW2} consists of three calls to \textsc{MinPair}.
+                Thus \textsc{MinW2} terminates if \textsc{MinPair} always terminates.
+
+                \textsc{MinPair} terminates because one of $i$ and $j$ is incremented
+                in each iteration of the loop, and $i$ and $j$ are bounded by $n$.
+                Thus the loop terminates after at most $2n - 1$ iterations.
+            \end{proof}
+            \begin{proof}[Proof of correctness]
+                We first prove the correctness of \textsc{MinPair}, that is, \[
+                    \forall i, j \in [1..n], \abs{X_{i} - Y_{j}} \geq \Call{MinPair}{X, Y}
+                \] Let $I$ be the proposition that \begin{align*}
+                    &m = \min\set{\abs{x - y} \mid x \in X[1..i], y \in Y[1..j]} \\
+                    \land\;\; &X_{i} \geq \max Y[1..j-1] \\
+                    \land\;\; &Y_{j} \geq \max X[1..i-1].
+                \end{align*} Clearly $I$ is true before the first iteration of the loop,
+                since $i = j = 1$ and $m = \abs{X_{1} - Y_{1}}$, and
+                $X[1..i-1] = Y[1..j-1] = [\;]$.
+
+                Suppose $I$ is true before the $k$-th iteration of the loop.
+                Let $i_0$, $j_0$, $m_0$ be the values of $i$, $j$, $m$ before the
+                $k$-th iteration.
+                Let $i_1$, $j_1$, $m_1$ be the values of $i$, $j$, $m$ after the
+                $k$-th iteration.
+                We have two cases.
+                \begin{itemize}
+                    \item \textbf{Case 1:} $X_{i_0} \leq Y_{j_0}$. \\
+                        Then $i_1 = i_0 + 1$, $j_1 = j_0$ and
+                        $m_1 = \min\set{m_0, \abs{X_{i_0 + 1} Y_{j_0}}}$.
+                        Let $i \in [1..i_0 + 1]$ and $j \in [1..j_0]$.
+
+                        If $i \in [1..i_0]$ then $m_1 \leq m_0 \leq \abs{X_{i} - Y_{j}}$
+                        by the induction hypothesis.
+
+                        If $i = i_0 + 1$, then we have two subcases.
+                        \begin{itemize}
+                            \item \textbf{Case 1.1:} $j = j_0$. \\
+                                Then $m_1 = \min\set{m_0, \abs{X_{i} - Y_{j}}} \leq \abs{X_{i} - Y_{j}}$.
+                            \item \textbf{Case 1.2:} $j < j_0$. \\
+                                Then $m_1 \leq m_0 \leq \abs{X_{i_0} - Y_{j}} = X_{i_0} - Y_{j} \leq X_{i} - Y_{j}$,
+                                since $X_{i_0} \geq \max Y[1..j-1]$ and $X$ is increasing.
+                        \end{itemize}
+                        Since all possible values of $m_1$ are of the form $x - y$
+                        for some $x \in A[i..i_1], y \in B[1..j_1]$, \[
+                            m_1 = \min\set{\abs{x - y} \mid x \in A[1..i_1], y \in B[1..j_1]}.
+                        \] Moreover, \[
+                            X_{i_1} \geq X_{i_0} \geq \max Y[1..j_0-1] = \max Y[1..j_1-1]
+                        \] and \[
+                            Y_{j_1} = Y_{j_0} \geq X_{i_0} = \max X[1..i_0] \geq \max X[1..i_1-1].
+                        \]
+                    \item \textbf{Case 2:} $Y_{j_0} < X_{i_0}$. \\
+                        This is identical to case 1 with the roles of $X$ and $Y$ as well as
+                        $i$ and $j$ swapped.
+
+                        $i_1 = i_0$, $j_1 = j_0 + 1$ and
+                        $m_1 = \min\set{m_0, \abs{X_{i_0} - Y[j_0 + 1]}}$.
+                        Let $i \in [1..i_0]$ and $j \in [1..j_0 + 1]$.
+
+                        If $j \in [1..j_0]$ then $m_1 \leq m_0 \leq \abs{X_{i} - Y_{j}}$
+                        by the induction hypothesis.
+
+                        If $j = j_0 + 1$, then we have two subcases.
+                        \begin{itemize}
+                            \item \textbf{Case 2.1:} $i = i_0$. \\
+                                Then $m_1 = \min\set{m_0, \abs{X_{i} - Y_{j}}} \leq \abs{X_{i} - Y_{j}}$.
+                            \item \textbf{Case 2.2:} $i < i_0$. \\
+                                Then $m_1 \leq m_0 \leq \abs{X_{i} - Y_{j_0}} = Y_{j_0} - X_{i} \leq Y_{j} - X_{i}$,
+                                since $Y_{j_0} \geq \max X[1..i-1]$ and $Y$ is increasing.
+                        \end{itemize}
+                        Since all possible values of $m_1$ are of the form $x - y$
+                        for some $x \in A[i..i_1], y \in B[1..j_1]$, \[
+                            m_1 = \min\set{\abs{x - y} \mid x \in A[1..i_1], y \in B[1..j_1]}.
+                        \] Moreover, \[
+                            X_{i_1} = X_{i_0} \geq Y_{j_0} \geq \max Y[1..j_0] \geq \max Y[1..j_1-1]
+                        \] and \[
+                            Y_{j_1} \geq Y_{j_0} \geq \max X[1..i_0-1] = \max X[1..i_1-1].
+                        \]
+                \end{itemize}
+                Thus $I$ is true after the $k$-th and before the $(k+1)$-th
+                iteration of the loop.
+                Since $I$ is true before the first iteration of the loop,
+                by induction $I$ is true after every iteration of the loop.
+
+                Outside the loop (line 10), $i > n$ or $j > n$ and by the loop invariant,
+                $m = \min\set{\abs{x - y} \mid x \in A[1..i], y \in Y[1..j]}$.
+
+                Suppose $i > n$.
+                Then $y \geq Y_{j} \geq \max A[1..i-1] = \max A[1..n]$
+                for all $y \in B[j+1..n]$, and so
+                $m \leq \abs{x - Y_{j}} = Y_{j} - x \leq y - x = \abs{x - y}$
+                for all $y \in B[j+1..n]$ and $x \in A[1..n]$.
+
+                For $y \in B[1..j]$,
+                $m \leq \set{\abs{x - y} \mid x \in A[1..i] = A[1..n], y \in B[1..j]} \leq \abs{x - y}$
+                for all $y \in B[1..j]$ and $x \in A[1..n]$.
+
+                Thus $m \leq \abs{x - y}$ for all $x \in A[1..n]$ and $y \in B[1..n]$.
+                Thus \[
+                    m = \min\set{\abs{x - y} \mid x \in A[1..n], y \in B[1..n]}
+                \]
+                and the function \textsc{MinPair} returns the correct value.
+
+                The case for $j > n$ is identical.
+
+                We now prove that the function \textsc{MinW2} returns the correct value.
+                Let $i, j, k \in [1..n]$.
+                Then
+                \begin{align*}
+                    \Call{W2}{i, j, k} &= \min\set{\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \min\set{\min\set{\abs{a - b} \mid a \in A, b \in B}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \min\set{\min\set{\abs{a - b} \mid a \in A, b \in B}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &= \min\set{\Call{MinPair}{A, B}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \min\set{\Call{MinPair}{A, B}, \Call{MinPair}{B, C}, \abs{C_{k} - A_{i}}} \\
+                                       &\geq \min\set{\Call{MinPair}{A, B}, \Call{MinPair}{B, C}, \Call{MinPair}{C, A}} \\
+                                       &= M.
+                \end{align*}
+                Since $\Call{MinPair}{X, Y} = \abs{x - y}$ for some $x \in X, y \in Y$,
+                we have that $M$ is of the form $\abs{a - b}$ or $\abs{b - c}$ or $\abs{c - a}$
+                for some $a \in A, b \in B, c \in C$.
+
+                Thus, $M = \min\Call{W2}{i, j, k}$ and so the function returns
+                the correct value.
+            \end{proof}
+            \begin{proof}
+                The runtime of \textsc{MinPair} is $O(n)$, since the loop
+                terminates in at most $2n - 1$ iterations and each iteration
+                takes $O(1)$ time.
+
+                Since \textsc{MinW2} calls \textsc{MinPair} $3$ times,
+                the runtime of \textsc{MinW2} is $O(3n) = O(n)$.
+            \end{proof}
+        \item \textbf{max} $\bm{W2}$.
+            \begin{algorithm}[H]
+                \caption{Maximum of $W_2$}
+                \begin{algorithmic}[1]
+                    \Function{maxW2}{$A[1..n], B[1..n], C[1..n]$}
+                        \State $W \gets \max\{\Call{f}{A, B, C}, \Call{f}{A, C, B}, \Call{f}{B, A, C},$
+                        \Statex $\qquad\Call{f}{B, C, A}, \Call{f}{C, A, B}, \Call{f}{C, B, A}\}$
+                        \State \Return $W$
+                    \EndFunction
+                    \Function{f}{$X[1..n]$, $Y[1..n]$, $Z[1..n]$}
+                        \State $j \gets 1$
+                        \State $W \gets Y_j$
+                        \For{$j \gets 2$ to $n$}
+                            \State $W \gets \max(W, \min(\abs{X_1 - Y_{j}}, \abs{Y_{j} - Z_{n}}, \abs{Z_{n} - X_{1}}))$
+                        \EndFor
+                        \State \Return $W$
+                    \EndFunction
+                \end{algorithmic}
+            \end{algorithm}
+            Clearly \Call{f}{$X[1..n]$, $Y[1..n]$, $Z[1..n]$} returns the maximum of the set \[
+                \set{\min(\abs{X_1 - y}, \abs{y - Z_{n}}, \abs{Z_{n} - X_{1}}) \mid y \in Y[1..n]}.
+            \] This can be easily seen by considering the loop invariant $I$: \[
+                W = \max\set{\min(\abs{X_1 - y}, \abs{Y_{j} - Z_{n}}, \abs{Z_{n} - X_{1}}) \mid Y \in Y[1..j]}.
+            \] and termination can be easily shown by considering the strictly
+            decreasing but non-negative value of $n - j$.
+
+            We thus shift our attention to \Call{maxW2}{$A[1..n], B[1..n], C[1..n]$}.
+            \begin{proof}[Proof of termination]
+                A call to \textsc{maxW2} simply calls \textsc{f} six times, and
+                computes the maximum of the results.
+                Since \textsc{f} terminates, so does \textsc{maxW2}.
+            \end{proof}
+            \begin{proof}[Proof of runtime]
+                Since \textsc{f} runs in $O(n)$ time (the loop runs $n - 1$ times),
+                \textsc{maxW2} runs in $O(n)$ time.
+            \end{proof}
+            \begin{proof}[Proof of correctness]
+                Let \[
+                    W_2(i, j, k) = \min(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}}).
+                \]
+                Let $i, j, k$ be such that $A_1 \leq A_{i} \leq B_{j} \leq C_{k} \leq C_{n}$.
+                Then
+                \begin{align*}
+                    \min(\abs{A_{i} - B_{j}}, \abs{B_{j} - C_{k}}, \abs{C_{k} - A_{i}})
+                        &= \min(B_{j} - A_{i}, C_{k} - B_{j}, C_{k} - A_{i}) \\
+                        \leq \min(B_{j} - A_1, C_{n} - B_{j}, C_{n} - A_1) \\
+                        &= \min(\abs{A_1 - B_{j}}, \abs{B_{j} - C_{n}}, \abs{C_{n} - A_1}) \\
+                        &= W_2(1, j, n)
+                \end{align*}
+                Thus $W_2(i, j, k) \leq W_2(1, j, n)$.
+
+                Similarly for other $i, j, k \in [1..n]$, we have indices $i', j', k'$
+                such that $W_2(i, j, k) \leq W_2(i', j', k')$ with one of
+                $i', j', k'$ being $1$ and one being $n$.
+                Thus, the maximum of the set \[
+                    \set{W_2(i, j, k) \mid i, j, k \in [1..n]}
+                \] is the maximum of the set \[
+                    \set{W_2(J) \mid J \text{ is a permutation of } (1, j, n) \text{ for some } j \in [1..n]}
+                \]
+                Since \Call{f}{$X[1..n]$, $Y[1..n]$, $Z[1..n]$} returns the maximum of the set \[
+                    \set{\min(\abs{X_1 - y}, \abs{y - Z_{n}}, \abs{Z_{n} - X_{1}}) \mid y \in Y[1..n]}
+                \] we have that \[
+                    \max\set{\Call{f}{\sigma} \mid \sigma \text{ is a permutation of } (A, B, C)}
+                \] is the maximum of the set \[
+                    \set{W_2(J) \mid J \text{ is a permutation of } (1, j, n) \text{ for some } j \in [1..n]}
+                \] and thus gives the maximum of \[
+                    \set{W_2(i, j, k) \mid i, j, k \in [1..n]}
+                \] as desired.
+            \end{proof}
+            We can also replace the linear search in \textsc{f} with a binary search
+            for the element closest to $(X_1 + Z_{n}) / 2$ in $Y$, which would
+            reduce the runtime of \textsc{f} to $O(\log n)$, and thus the runtime
+            of \textsc{maxW2} to $O(\log n)$.
+    \end{enumerate}
+\end{solution}
+\end{document}

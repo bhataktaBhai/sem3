@@ -1,0 +1,78 @@
+\section{Binomial Coefficients} \label{sec:binom}
+\begin{definition} \label{def:binom:choice}
+    The number of subsets of $n$ with cardinality $k$ is denoted by
+    $\binom{n}{k}$ and is called ``$n$ choose $k$''.
+\end{definition}
+
+\begin{lemma}
+    For any $n \in \N$, $k \in [0..n]$, \[
+        \binom{n}{k} + \binom{n}{k + 1} = \binom{n + 1}{k + 1}.
+    \]
+\end{lemma}
+\begin{proof}
+    Let $A_{j}$ be the set of subsets of $n$ with cardinality $j$.
+    Let $B_{j}$ be the set of subsets of $n + 1$ with cardinality $j$.
+
+    Note that for $i \neq j$, $A_{i} \cap A_{j} = \O$.
+    Let $f : A_{k} \cup A_{k + 1} \to B_{k + 1}$ be defined as \[
+        f(S) = \begin{cases}
+            S \cup \set{n} & S \in A_{k} \\
+            S & S \in A_{k + 1}
+        \end{cases}
+    \] and let $g : B_{k + 1} \to A_{k} \cup A_{k + 1}$ be defined as \[
+        g(T) = T \setminus \set{n}.
+    \]
+    Let $h = g \circ f$.
+    Then \begin{align*}
+        h(S) &= \left. \begin{cases}
+            S \cup \set{n} & S \in A_{k} \\
+            S & S \in A_{k + 1}
+        \end{cases}\right\} \setminus \set{n + 1} \\
+        &= \begin{cases}
+            S & S \in A_{k} \\
+            S & S \in A_{k + 1}
+        \end{cases} \\
+        &= S.
+    \end{align*}
+    Thus $f$ is an injection.
+
+    Let $T \in B_{k + 1}$.
+    If $n \notin T$, then $T \in A_{k + 1}$ and so $f(T) = T$.
+    If $n \in T$, then $T \setminus \set{n} \in A_{k}$ and so
+    $f(T \setminus \set{n}) = T$.
+    Thus $f$ is a surjection.
+
+    Therefore $f$ is a bijection and so $\size{(A_{k} \cup A_{k + 1})} = \size{B_{k + 1}}$.
+    Since $A_{k} \cap A_{k + 1} = \O$,
+    \begin{align*}
+        \size{(A_{k} \cup A_{k + 1})} &= \size{A_{k}} + \size{A_{k + 1}} \\
+        \size{B_{k + 1}} &= \size{A_{k}} + \size{A_{k + 1}} \\
+        \binom{n + 1}{k + 1} &= \binom{n}{k} + \binom{n}{k + 1}. \qedhere
+    \end{align*}
+\end{proof}
+
+\begin{theorem}[Binomial Expansion] \label{thm:binom:binomial}
+    For any $n \in \N$, \[
+        (1 + x)^{n} = \sum_{j = 0}^{n} \binom{n}{j} x^{j}.
+    \]
+\end{theorem}
+\begin{proof}
+    Let $P(n)$ be the given statement for some $n$.
+    For $n = 0$, the statement is trivial.
+    
+    Suppose $P(k)$ is true.
+    Then
+    \begin{align*}
+        (1 + x)^{k + 1} &= (1 + x)(1 + x)^{k} \\
+        &= (1 + x) \sum_{j = 0}^{k} \binom{k}{j} x^{j} \\
+        &= \sum_{j = 0}^{k} \binom{k}{j} x^{j} + \sum_{j = 0}^{k} \binom{k}{j} x^{j + 1} \\
+        &= \binom{k}{0} x^{0} + \sum_{j = 1}^{k} \binom{k}{j} x^{j}
+            + \sum_{j = 1}^{k} \binom{k}{j - 1} x^{j} + \binom{k}{k} x^{k + 1} \\
+        &= \binom{k + 1}{0} x^{0} + \sum_{j = 1}^{k} \left[ \binom{k}{j} + \binom{k}{j - 1} \right] x^{j}
+            + \binom{k + 1}{k + 1} x^{k + 1} \\
+        &= \sum_{j = 0}^{k + 1} \binom{k + 1}{j} x^{j}.
+    \end{align*}
+    Thus, $P(k + 1)$ is true.
+
+    By induction, $P(n)$ is true for all $n \in \N$.
+\end{proof}

@@ -1,0 +1,225 @@
+\documentclass[12pt]{article}
+\input{../preamble}
+\usepackage{siunitx}
+
+\title{Assignment 01}
+\author{Naman Mishra}
+\date{04 August, 2023}
+
+\begin{document}
+\maketitle
+
+\begin{notation}
+    \begin{align*}
+        [a..b] &\coloneqq [a, b] \cap \Z \\
+        [P] &\coloneqq \begin{cases}
+            1 & \text{if $P$ is true} \\
+            0 & \text{if $P$ is false}
+        \end{cases} \\
+        S_{n} &\coloneqq \set{\text{permutations of } [1..n]}
+    \end{align*}
+\end{notation}
+\setcounter{section}{1}
+\begin{problem}
+    A fair coin is tossed $n$ times.
+    Show that the probability that there is exactly one run of heads and two
+    runs of tails is $\frac{(n - 1)(n - 2)}{2^{n + 1}}$.
+    [\textit{Note}: A run is a consecutive sequence of tosses giving the same
+    result.
+    For example, $001101000$ has three runs of tails and two runs of heads]
+\end{problem}
+\begin{solution}
+    We model the probability space as $\Omega = \{0, 1\}^n$ with $p_{\omega}$
+    being $\frac{1}{\size{\Omega}} = \frac{1}{2^{n}}$ for all $\omega$.
+    This is because the coin is fair, and each toss is assumed to be independent
+    of the others.
+
+    Let $A$ be the event that there is exactly one run of heads and two runs
+    of tails.
+    This implies that the first head is at an index greater than $1$ and the
+    last head at an index less than $n$ ($1$-indexed).
+    Thus we can write $A$ as \[
+        A = \set{\omega \in \Omega \mid \exists x < y \in [2..n]
+            \text{ such that } \omega_{j} = [x \leq j < y]}.
+    \]
+    Let $B$ be the set of subsets of $[2..n]$ of size $2$.
+    Let $f : B \to A$ be given as $f(b) = a$ where \[
+        a_{j} = [\min b \leq j < \max b] \text{ for all } j.
+    \]
+    Then $f$ is a bijection.
+
+    Thus we have $\size{A} = \size{B} = \binom{n-1}{2}$ and so the probability
+    of $A$ is \begin{align*}
+        \Pr(A) &= \sum_{\omega \in A} p_{\omega} \\
+            &= \frac{\size{A}}{2^{n}} \\
+            &= \frac{(n - 1)(n - 2)}{2^{n + 1}}
+    \end{align*} as required.
+\end{solution}
+
+% \begin{lemma}
+%     Let $S$ be a set with $N$ elements.
+%     Let $k \in [1..N]$ and let $m \in [0..N]^{k}$ such that $\sum m \leq N$.
+%     Let \begin{multline*}
+%         B = \{b \in \mathscr{P}(S)^{k} \mid \forall i \in [1..k], \size{b_{i}} = m_{i} \\
+%         \text{ and } \forall i, j \in [1..k], i \neq j \implies b_{i} \cap b_{j} = \O \}.
+%     \end{multline*}
+%     Then \[
+%         \size{B} = \binom{N}{m_{1}} \binom{N - m_{1}}{m_{2}} \cdots
+%         \binom{N - \sum_{i=1}^{k-1} m_{i}}{m_{k}}.
+%     \]
+% \end{lemma}
+\begin{problem}
+    A well-shuffled deck of cards is dealt among four players
+    (so $13$ cards each).
+    What is the chance that no player has two cards of the same kind
+    (\textit{i.e.}, two aces or two ones, or two queens, etc)?
+    Find an exact answer, and also give an approximate numerical value.
+\end{problem}
+\begin{solution}
+    We assign a number from $1$ to $4$ to each player,
+    a number from $1$ to $4$ to each suit,
+    and a number from $1$ to $13$ to each face.
+
+    We can thus model each card as $(f, s) \in C = [1..13] \times [1..4]$, where
+    $f$ is the face and $s$ is the suit.
+    
+    We model the sample space as \[
+        \Omega = \set{
+            Q \in M_{13 \times 4}([1..4]) \mid
+            f(p, Q) = 13 \text{ for all } p \in [1..4]
+        },
+    \] where $f(x, A)$ is the number of occurences of $x$ in $A$, and
+    $Q_{ij}$ represents the player to whom the card $(i, j)$ is dealt.
+
+%     We introduce a natural total order $\leq$ on $C$ as \[
+%         (f, s) \leq (\tilde{f}, \tilde{s}) \iff
+%         4f + s \leq 4\tilde{f} + \tilde{s}.
+%     \] Let \[
+%         \Omega_{1} = \set{
+%             X \in (C^{13})^{4} \mid
+%             Q_{ij} = k \iff (i, j) \in X_{k}
+%         }.
+%     \] Let \[
+%         \Omega_{2} = \set{
+% k
+%         }
+%     \]
+    We can find $\size{\Omega}$ as follows: \\
+    First we choose $13$ out of the $52$ positions in the matrix to be $1$. \\
+    Then we choose $13$ out of the remaining $39$ positions to be $2$. \\
+    Then we choose $13$ out of the remaining $26$ positions to be $3$. \\
+    Finally, we choose $13$ out of the remaining $13$ positions to be $4$.
+
+    This gives a total of \[
+        \binom{52}{13} \binom{39}{13} \binom{26}{13} \binom{13}{13}
+    \] possible ways to form an element of $\Omega$.
+
+    Thus $\size{\Omega} =
+    \binom{52}{13} \binom{39}{13} \binom{26}{13} \binom{13}{13}
+    = \frac{52!}{13!^{4}}$.
+
+    Since the deck is well-shuffled, it is fair to assume that each element of
+    $\Omega$ is equally likely.
+    Thus $p_{\omega} = \frac{1}{\size{\omega}} = \frac{13!^{4}}{52!}$ for all
+    $\omega \in \Omega$.
+
+    We can model the event as \[
+        E = \set{
+            \omega \in \Omega \mid
+            \forall i \in [1..13] (\forall j \in [1..4] \forall k \in [1..4] (
+            j \neq k \implies \omega_{ij} \neq \omega_{ik}
+            ))
+        }
+    \] and so by the pigeonhole principle, \[
+        E = \set{
+            \omega \in \Omega \mid
+            \forall i \in [1..13]
+            \left(\set{\omega_{ij}}_{j \in [1..4]} = [1..4]\right)
+        }
+    \] and thus \[
+        E = \set{
+            \omega \in \Omega \mid
+            \forall i \in [1..13]
+            \left((\omega_{ij})_{j \in [1..4]} \in S_{4}\right)
+        }.
+    \] We can define a bijection $\phi : S_{4}^{13} \to E$ by \[
+        \phi(\varsigma)_{ij} = (\varsigma_{i})_{j}
+    \] and so $\size{E} = \size{S_{4}^{13}} = 4!^{13}$.
+
+    Therefore, \[
+        \Pr(E) = \sum_{\omega \in E} p_{\omega} = \frac{4!^{13} 13!^{4}}{52!}.
+    \] This is approximately equal to $1.63 \cdot 10^{-11}$.
+    
+    If interpreted as seconds, it is roughly the time it takes light to travel a
+    distance of $\SI{5}{\milli\meter}$.
+\end{solution}
+% \begin{problem}
+%     
+% \end{problem}
+% \begin{solution} \leavevmode
+%     \begin{enumerate}
+%         \item We can model the sample space as $\Omega = [1..n]^{k}$ with
+%             $p_{\omega} = \frac{1}{\size{\Omega}} = \frac{1}{n^{k}}$ for all
+%             $\omega \in \Omega$.
+%
+%             The event that $1$ is not in the chosen sample is $A = [2..n]^{k}$.
+%
+%             Thus $\Pr(A) = \sum_{a \in A} p_{a} = \frac{\size{A}}{\size{\Omega}}
+%             = \paren{1-\frac{1}{n}}^{k}$
+%
+%         \item We can model the sample space as \[
+%             \Omega = \set{\omega \in \mathscr{P}([1..n]) \mid \size{\omega} = k}
+%         \] with $p_{\omega} = \frac{1}{\size{\Omega}} = \binom{n}{k}^{-1}$
+%         for all $\omega \in \Omega$.
+%
+%         The event that $1$ is not in the chosen sample is \begin{align*}
+%             A &= \set{\omega \in \Omega \mid 1 \notin \omega} \\
+%               &= \set{\omega \in \mathscr{P}([1..n]) \mid \size{\omega} = k
+%                 \text{ and } 1 \notin \omega} \\
+%               &= \set{\omega \in \mathscr{P}([2..n]) \mid \size{\omega} = k}.
+%         \end{align*}
+%         Thus \[
+%             \Pr(A) = \sum_{a \in A} p_{a}
+%                    = \frac{\size{A}}{\size{\Omega}}
+%                    = \frac{\binom{n-1}{k}}{\binom{n}{k}}
+%                    = \frac{n - k}{n}.
+%         \]
+%     \end{enumerate}
+% \end{solution}
+%
+% \begin{problem}
+%     A die is thrown repeatedly till the face $6$ comes up for the first time.
+%     Write the probability space and calculate the probability of the event that
+%     the face $1$ never showed up.
+% \end{problem}
+% \begin{problem}
+%     A fair die is thrown, and if the number $k$ shows up, a fair coin is tossed
+%     $k$ times.
+%     Write down the probability space fully and calculate the probability of the
+%     event that no heads show up.    
+% \end{problem}
+% \begin{problem}
+%     Generalize the first problem to compute the probability that in a sequence
+%     of $n$ tosses of a fair coin, there are a total of $k$ runs (note that if
+%     there are $j$ runs of heads, the number of runs of tails is either $j - 1$
+%     or $j$ or $j + 1$).
+% \end{problem}
+% \begin{solution}
+%     We model the sample space as $\Omega = \set{0, 1}^{n}$ with
+%     $p_{\omega} = \frac{1}{\size{\Omega}} = \frac{1}{2^{n}}$ for all
+%     $\omega \in \Omega$.
+%
+%     If there are $k$ runs, then the sequence toggles between $0$ and $1$ $k - 1$
+%     times.
+%     Thus we can model the event as \begin{multline*}
+%         A = \left\{\omega \in \Omega \mid \exists x_{1} < \dots < x_{k-1} \in 
+%         [2..n] \right.\\
+%         \left.\text{ such that }
+%         \omega_{j} = \left.\begin{cases}
+%             1 - \omega_{j-1} & \text{if } j \in \set{x_{i}} \\
+%             \omega_{j - 1} & \text{otherwise}
+%         \end{cases}\right\}\right\}
+%     \end{multline*}
+% \end{solution}
+
+\end{document}

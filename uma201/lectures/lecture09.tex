@@ -1,0 +1,95 @@
+\lecture{09}{Tue 29 Aug '23}{Conditional Probability}
+
+\section{Conditional Probability} \label{sec:conditional}
+
+\begin{definition}[Conditional Probability] \label{def:conditional}
+    Let $(\Omega, p)$ be a probability space and let $B$ be an event with $\Pr(B) > 0$.
+    For any event $A$, we define \[
+        \Pr(A \given B) = \frac{\Pr(A \cap B)}{\Pr(B)}
+    \]
+\end{definition}
+\begin{remark} \leavevmode
+    \begin{itemize}
+        \item $\Pr(B \given B) = 1$.
+        \item $\Pr(B^{c} \given B) = 0$.
+        \item $\Pr(\;\cdot \given B)$ has the properties of probability.
+            \begin{itemize}
+                \item If $A_1, A_2$ are disjoint, then \[
+                    \Pr(A_1 \cup A_2 \given B) = \Pr(A_1 \given B) + \Pr(A_2 \given B).
+                \]
+                \item $\Pr(A^c \given B) = 1 - \Pr(A \given B)$.
+            \end{itemize}
+    \end{itemize}
+\end{remark}
+\begin{remark}
+    Events $A$ and $B$ are independent if and only if $\Pr(B) = 0$ or
+    $\Pr(A \given B) = \Pr(A)$.
+\end{remark}
+\begin{examples}
+    \item A shuffled deck of cards.
+        $\Omega = S_{52}$, $p : \omega \mapsto \frac{1}{52!}$.
+        
+        Let $B$ be the event that the first card is a spade,
+        let $A$ be the event that the second card is a diamond,
+        and let $C$ be the event that the second card is a queen.
+        We have \begin{align*}
+            \Pr(A) &= \frac{1}{4}, \\
+            \Pr(B) &= \frac{1}{4}, \\
+            \Pr(C) &= \frac{1}{13}.
+        \end{align*}
+        For the intersections we have, \begin{align*}
+            \Pr(A \cap B) &= \frac{13 \cdot 13 \cdot 50!}{52!} \\
+                &= \frac{13}{4 \cdot 51}, \\
+            \Pr(B \cap C) &= \frac{(12 \cdot 4 + 1 \cdot 3) \cdot 50!}{52!} \\
+                &= \frac{1}{52}, \\
+            \Pr(C \cap A) &= \frac{1}{52}.
+        \end{align*}
+        Now for the conditional probabilities, 
+        \begin{alignat*}{2}
+            \Pr(A \given B) &= \frac{13}{51} \quad&&> \Pr(A) \\
+            \Pr(C \given B) &= \frac{1}{4} \quad&&= \Pr(C) \\
+            \Pr(A \given C) &= \frac{1}{13} \quad&&= \Pr(A) \\
+            \Pr(B \given C) &= \frac{1}{13} \quad&&= \Pr(B) \\
+            \Pr(B \given A) &= \frac{13}{51} \quad&&> \Pr(B) \\
+            \Pr(C \given A) &= \frac{1}{4} \quad&&= \Pr(C).
+        \end{alignat*}
+\end{examples}
+\begin{notation}
+    We notate $\Pr(A \given B \cap C)$ as $\Pr(A \given B, C)$.
+\end{notation}
+\begin{proposition}[Intersections] \label{thm:conditional:intersections}
+    For any events $A_1, \dots, A_n$ provided
+    $\Pr(A_1 \cap \ldots \cap A_{n -1}) \neq 0$, we have \[
+        \Pr(A_1 \cap \ldots \cap A_n) = \Pr(A_1) \Pr(A_2 \given A_1) \dots \Pr(A_n \given A_1, \dots, A_{n - 1}).
+    \]
+\end{proposition}
+\begin{proposition}[Law of Total Probability] \label{thm:conditional:total}
+    Let $B_1, \dots, B_n$ be a partition of $\Omega$.
+    Then for any event $A$, we have \[
+        \Pr(A) = \sum_{i = 1}^{n} \Pr(B_i) \Pr(A \given B_i)
+    \] where multiplication short-circuits to $0$.
+\end{proposition}
+
+\begin{theorem}[Bayes' Theorem] \label{thm:conditional:bayes}
+    Let $B_1, \dots, B_n$ be a partition of $\Omega$.
+    Then for any event $A$ with $\Pr(A) > 0$, we have \[
+        \Pr(B_i \given A) = \frac{\Pr(B_i) \Pr(A \given B_i)}{\sum_{j = 1}^{n} \Pr(B_j) \Pr(A \given B_j)},
+    \] where multiplication short-circuits to $0$.
+\end{theorem}
+
+\begin{example}
+    Suppose there is a disease $X$ that affects $1$ in $10000$ people.
+    There is a test $T$ for $X$ that is $99\%$ accurate.
+    That is, $\Pr(T \given X) = 0.99 = \Pr(T^c \given X^c)$.
+
+    A person gets tested and the test is positive.
+    What is the chance they have the disease?
+    \begin{align*}
+        \Pr(X \given T) &= \frac{\Pr(X) \Pr(T \given X)}{\Pr(X) \Pr(T \given X)
+                + \Pr(X^{c}) \Pr(T \given X^{c})} \\
+            &= \frac{10^{-4} \cdot 0.99}{10^{-4} \cdot 0.99 + (1 - 10^{-4}) \cdot 0.01} \\
+            &= \frac{0.99}{0.99 + 9999 \cdot 0.01} \\
+            &= \frac{0.99}{100.98} \\
+            &\approx 0.98\%.
+    \end{align*}
+\end{example}
